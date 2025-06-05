@@ -51,5 +51,6 @@ CREATE INDEX idx_gasto_kilometraje ON gastos(kilometraje);*/
 
 
 INSERT INTO usuario (nombre, password ) VALUES('Felix', '12345');
+INSERT INTO usuario (nombre, password ) VALUES('Samuel', '12345');
 
 SELECT * FROM usuario;

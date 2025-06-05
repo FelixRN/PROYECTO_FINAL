@@ -33,7 +33,6 @@ public class UserView extends javax.swing.JFrame {
         setLocationRelativeTo(null);
         
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        
         // Cargar datos del usuario
         cargarDatosUsuario();
                
@@ -42,6 +41,13 @@ public class UserView extends javax.swing.JFrame {
             jLabel_Wallpaper.getHeight(), Image.SCALE_DEFAULT));
             jLabel_Wallpaper.setIcon(icono);
             this.repaint();
+         }   
+    
+        @Override
+        public Image getIconImage(){
+        Image retValue = Toolkit.getDefaultToolkit().getImage(ClassLoader.getSystemResource("images/icon_of.png"));
+        return retValue;
+            
         } 
     
 
@@ -136,11 +142,7 @@ private void cargarDatosUsuario() {
     public String getUserUuid() {
         return this.userUuid;
     }
-        @Override
-        public Image getIconImage(){
-        Image retValue = Toolkit.getDefaultToolkit().getImage(ClassLoader.getSystemResource("images/icon_of.png"));
-        return retValue;
-        }
+        
     
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -164,6 +166,11 @@ private void cargarDatosUsuario() {
         getContentPane().add(jLabel_NombreUsuario, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, -1, -1));
 
         jButton_CrearCoche.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icon_car.png"))); // NOI18N
+        jButton_CrearCoche.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_CrearCocheActionPerformed(evt);
+            }
+        });
         getContentPane().add(jButton_CrearCoche, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 120, 170, 120));
 
         jButton_VerCochesPropios.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icon_lens.png"))); // NOI18N
@@ -191,8 +198,14 @@ private void cargarDatosUsuario() {
 
     }//GEN-LAST:event_jButton_VerCochesPropiosActionPerformed
 
+    private void jButton_CrearCocheActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_CrearCocheActionPerformed
+        /*Indicar a donde ir después de darle al boton*/
+    }//GEN-LAST:event_jButton_CrearCocheActionPerformed
+
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(() -> new UserView().setVisible(true));
+        
+        
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

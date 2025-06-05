@@ -37,7 +37,7 @@ public class LoginView extends javax.swing.JFrame {
         
         ImageIcon logo = new ImageIcon("src/images/Logo.png");
         Icon icono_logo = new ImageIcon(logo.getImage().getScaledInstance(jLabel_Logo.getWidth(),
-                jLabel_Logo.getHeight(), Image.SCALE_DEFAULT));
+        jLabel_Logo.getHeight(), Image.SCALE_DEFAULT));
         jLabel_Logo.setIcon(icono_logo);
         this.repaint();
         }
@@ -48,7 +48,6 @@ public class LoginView extends javax.swing.JFrame {
         return retValue;
         }
         
-
     
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -89,7 +88,7 @@ public class LoginView extends javax.swing.JFrame {
                 jButton_AccederActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton_Acceder, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 430, 150, -1));
+        getContentPane().add(jButton_Acceder, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 430, 150, -1));
 
         jLabel_Footer.setFont(new java.awt.Font("Segoe UI Semilight", 0, 10)); // NOI18N
         jLabel_Footer.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -105,7 +104,7 @@ public class LoginView extends javax.swing.JFrame {
                 jButton_RegistrarseActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton_Registrarse, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 470, 150, -1));
+        getContentPane().add(jButton_Registrarse, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 470, 150, -1));
         getContentPane().add(jLabel_Wallpaper, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 400, 550));
 
         pack();
@@ -157,7 +156,11 @@ public class LoginView extends javax.swing.JFrame {
     }//GEN-LAST:event_txt_passwordActionPerformed
 
     private void jButton_RegistrarseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_RegistrarseActionPerformed
-        // TODO add your handling code here:
+        /*Indicar a donde ir después de darle al boton*/
+        
+        RegisterView registrarUsuario = new RegisterView();
+        registrarUsuario.setVisible(true);
+        
     }//GEN-LAST:event_jButton_RegistrarseActionPerformed
 
     public static void main(String args[]) {
