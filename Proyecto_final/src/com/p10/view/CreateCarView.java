@@ -8,17 +8,15 @@ package com.p10.view;
  *
  * @author Yo y tu
  */
-public class User extends javax.swing.JFrame {
+public class CreateCarView extends javax.swing.JFrame {
     
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(User.class.getName());
+    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(CreateCarView.class.getName());
 
     /**
-     * Creates new form User
+     * Creates new form CreateCarView
      */
-    public User() {
+    public CreateCarView() {
         initComponents();
-        setTitle("Usuario");
-        setLocationRelativeTo(null);
     }
 
     /**
@@ -68,7 +66,7 @@ public class User extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> new User().setVisible(true));
+        java.awt.EventQueue.invokeLater(() -> new CreateCarView().setVisible(true));
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

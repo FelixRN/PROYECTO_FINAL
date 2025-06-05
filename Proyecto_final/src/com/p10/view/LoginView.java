@@ -1,4 +1,5 @@
 package com.p10.view;
+import com.p10.model.entities.User;
 
 import com.p10.model.DatabaseConnection;
 import java.awt.Image;
@@ -12,16 +13,16 @@ import javax.swing.JOptionPane;
 
 
 
-public class View_Login extends javax.swing.JFrame {
+public class LoginView extends javax.swing.JFrame {
     
    /*Enviar datos entre interfaces*/
     public static String user = "";
     String pass = "";
     
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(View_Login.class.getName());
+    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(LoginView.class.getName());
 
  
-    public View_Login() {
+    public LoginView() {
         initComponents();
         setSize(400,550);
         setResizable(false);
@@ -58,6 +59,7 @@ public class View_Login extends javax.swing.JFrame {
         jButton_Acceder = new javax.swing.JButton();
         jLabel_Footer = new javax.swing.JLabel();
         jLabel_Logo = new javax.swing.JLabel();
+        jButton_Registrarse = new javax.swing.JButton();
         jLabel_Wallpaper = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -72,6 +74,11 @@ public class View_Login extends javax.swing.JFrame {
         txt_password.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
         txt_password.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         txt_password.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        txt_password.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txt_passwordActionPerformed(evt);
+            }
+        });
         getContentPane().add(txt_password, new org.netbeans.lib.awtextra.AbsoluteConstraints(95, 370, 210, 30));
 
         jButton_Acceder.setBackground(new java.awt.Color(204, 204, 204));
@@ -82,13 +89,23 @@ public class View_Login extends javax.swing.JFrame {
                 jButton_AccederActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton_Acceder, new org.netbeans.lib.awtextra.AbsoluteConstraints(128, 430, 150, -1));
+        getContentPane().add(jButton_Acceder, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 430, 150, -1));
 
         jLabel_Footer.setFont(new java.awt.Font("Segoe UI Semilight", 0, 10)); // NOI18N
         jLabel_Footer.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel_Footer.setText("Proyecto realizado by: Felix");
         getContentPane().add(jLabel_Footer, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 510, 180, -1));
         getContentPane().add(jLabel_Logo, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 30, 270, 270));
+
+        jButton_Registrarse.setBackground(new java.awt.Color(153, 255, 153));
+        jButton_Registrarse.setText("REGISTRARSE");
+        jButton_Registrarse.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        jButton_Registrarse.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_RegistrarseActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jButton_Registrarse, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 470, 150, -1));
         getContentPane().add(jLabel_Wallpaper, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 400, 550));
 
         pack();
@@ -99,10 +116,13 @@ public class View_Login extends javax.swing.JFrame {
         user = txt_user.getText().trim();
         pass = txt_password.getText().trim();
         
+        System.out.println("Usuario ingresado: '" + user + "'");
+        System.out.println("Password ingresado: '" + pass + "'");
+        
         if (!user.equals("") || !pass.equals("")) {
             
             try {
-                Connection cn = DatabaseConnection.getConnection(); // ✅ correcto
+                Connection cn = DatabaseConnection.getConnection(); 
                 PreparedStatement pst = cn.prepareStatement(
                     "SELECT nombre FROM usuario "
                             + "WHERE nombre = ? AND password = ?");
@@ -114,7 +134,7 @@ public class View_Login extends javax.swing.JFrame {
 
             if (rs.next()) {
                 dispose();
-                new User().setVisible(true);
+                new UserView().setVisible(true);
             } else {
                 JOptionPane.showMessageDialog(null, "Datos de acceso incorrectos");
                 txt_user.setText("");
@@ -132,12 +152,21 @@ public class View_Login extends javax.swing.JFrame {
         
     }//GEN-LAST:event_jButton_AccederActionPerformed
 
+    private void txt_passwordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_passwordActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txt_passwordActionPerformed
+
+    private void jButton_RegistrarseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_RegistrarseActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton_RegistrarseActionPerformed
+
     public static void main(String args[]) {
-        java.awt.EventQueue.invokeLater(() -> new View_Login().setVisible(true));
+        java.awt.EventQueue.invokeLater(() -> new LoginView().setVisible(true));
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton_Acceder;
+    private javax.swing.JButton jButton_Registrarse;
     private javax.swing.JLabel jLabel_Footer;
     private javax.swing.JLabel jLabel_Logo;
     private javax.swing.JLabel jLabel_Wallpaper;
