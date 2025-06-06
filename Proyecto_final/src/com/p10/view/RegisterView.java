@@ -17,6 +17,10 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.WindowConstants;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -142,14 +146,50 @@ public class RegisterView extends javax.swing.JFrame {
                 if (rs.next()) {
                 txt_registerNew.setBackground(Color.RED);
                     JOptionPane.showMessageDialog(null, "Nombre de usuario no disponible.");
-                    cn.close();
+                    return;/*cn.close();*/
             } else {
+                    
+            //cn.close();
+            
+                    if (validacion == 0) {
+                        try {
+                             Connection cn2 = DatabaseConnection.getConnection(); 
+                             PreparedStatement pst2 = cn2.prepareStatement(
+                                "insert into usuario (nombre,password)values (?,?)");
+                             //Insertar valores dentro de la BBDD
+                            pst2.setString(1, nombre);
+                            pst2.setString(2, pass);
+                            
+                            pst2.executeUpdate();
+                           // cn2.close();
+                            
+                            Limpiar();
+                            
+                            txt_registerNew.setBackground(Color.GREEN);
+                            txt_passwordNew.setBackground(Color.GREEN);
+                            
+                            JOptionPane.showMessageDialog(null, "Registro exitoso.");
+                            this.dispose();
+                            
+                        } catch (SQLException e) {
+                            System.err.println("Error en registrar usuario" + e);
+                            JOptionPane.showMessageDialog(null, "ERROR al registrar!, Contacta al administrador.");
+                        }
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Debes llenar todos los campos.");
+
+                        
+                    }
+                    
             }
-        } catch (Exception e) {
+        } catch (SQLException e) {
             System.err.println("Error en validar nombre de usuario" + e);
             JOptionPane.showMessageDialog(null, "ERROR al comparar usuario!, contacte al administrador.");
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(RegisterView.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(RegisterView.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
     }//GEN-LAST:event_jButton_RegistrarseActionPerformed
 
     /**
@@ -195,4 +235,9 @@ public class RegisterView extends javax.swing.JFrame {
     private javax.swing.JPasswordField txt_passwordNew;
     private javax.swing.JTextField txt_registerNew;
     // End of variables declaration//GEN-END:variables
+
+    public void Limpiar(){
+        txt_registerNew.setText("");
+        txt_passwordNew.setText("");
+    }
 }

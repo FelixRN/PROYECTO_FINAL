@@ -43,22 +43,30 @@ public class SeeOwnCars extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
         jButton_Info = new javax.swing.JButton();
         jButton_Edit = new javax.swing.JButton();
         jButton_Add = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTable_Coches = new javax.swing.JTable();
         jLabel_Wallpaper = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jLabel1.setText("Ver lista coches");
-        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 20, 600, 200));
-
         jButton_Info.setText("Ver info del coche");
+        jButton_Info.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_InfoActionPerformed(evt);
+            }
+        });
         getContentPane().add(jButton_Info, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 300, 130, 60));
 
         jButton_Edit.setText("Editar / Eliminar");
+        jButton_Edit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_EditActionPerformed(evt);
+            }
+        });
         getContentPane().add(jButton_Edit, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 300, 130, 60));
 
         jButton_Add.setText("Añadir / Ver gastos");
@@ -68,14 +76,40 @@ public class SeeOwnCars extends javax.swing.JFrame {
             }
         });
         getContentPane().add(jButton_Add, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 300, 130, 60));
+
+        jTable_Coches.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane1.setViewportView(jTable_Coches);
+
+        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 20, 560, 220));
         getContentPane().add(jLabel_Wallpaper, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 650, 430));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton_AddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_AddActionPerformed
-        // TODO add your handling code here:
+        ExpenseView VerGastos = new ExpenseView();
+        VerGastos.setVisible(true);
     }//GEN-LAST:event_jButton_AddActionPerformed
+
+    private void jButton_EditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_EditActionPerformed
+        CreateCarView CrearCoche = new CreateCarView();
+        CrearCoche.setVisible(true);
+    }//GEN-LAST:event_jButton_EditActionPerformed
+
+    private void jButton_InfoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_InfoActionPerformed
+        InfoView VerInfo = new InfoView();
+        VerInfo.setVisible(true);
+    }//GEN-LAST:event_jButton_InfoActionPerformed
 
     /**
      * @param args the command line arguments
@@ -116,7 +150,8 @@ public class SeeOwnCars extends javax.swing.JFrame {
     private javax.swing.JButton jButton_Add;
     private javax.swing.JButton jButton_Edit;
     private javax.swing.JButton jButton_Info;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel_Wallpaper;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable jTable_Coches;
     // End of variables declaration//GEN-END:variables
 }

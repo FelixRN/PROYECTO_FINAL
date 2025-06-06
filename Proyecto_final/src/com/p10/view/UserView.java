@@ -195,11 +195,14 @@ private void cargarDatosUsuario() {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton_VerCochesPropiosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_VerCochesPropiosActionPerformed
-
+        SeeOwnCars CochesPropios = new SeeOwnCars();
+        CochesPropios.setVisible(true);
     }//GEN-LAST:event_jButton_VerCochesPropiosActionPerformed
 
     private void jButton_CrearCocheActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_CrearCocheActionPerformed
         /*Indicar a donde ir después de darle al boton*/
+        CreateCarView CrearCoche = new CreateCarView();
+        CrearCoche.setVisible(true);
     }//GEN-LAST:event_jButton_CrearCocheActionPerformed
 
     public static void main(String args[]) {

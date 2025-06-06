@@ -10,6 +10,7 @@ import java.sql.ResultSet;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
+import java.sql.SQLException;
 
 
 
@@ -118,18 +119,24 @@ public class LoginView extends javax.swing.JFrame {
         System.out.println("Usuario ingresado: '" + user + "'");
         System.out.println("Password ingresado: '" + pass + "'");
         
-        if (!user.equals("") || !pass.equals("")) {
-            
+        if (!user.equals("") && !pass.equals("")) {
+            //Código agregado, si no funciona eliminar
+            Connection cn = null; // Inicializar a null
+            PreparedStatement pst = null;
+            ResultSet rs = null;
+            //Hasta aqui
             try {
-                Connection cn = DatabaseConnection.getConnection(); 
-                PreparedStatement pst = cn.prepareStatement(
+                /*Connection cn = DatabaseConnection.getConnection(); 
+                PreparedStatement pst = cn.prepareStatement*/
+                cn = DatabaseConnection.getConnection(); // Obtener la conexión
+                pst = cn.prepareStatement(
                     "SELECT nombre FROM usuario "
                             + "WHERE nombre = ? AND password = ?");
                 
             pst.setString(1, user);
             pst.setString(2, pass);
-
-            ResultSet rs = pst.executeQuery();
+            rs = pst.executeQuery();
+            //Agregar si la anterior linea no funciona -> ResultSet rs = pst.executeQuery();
 
             if (rs.next()) {
                 dispose();
@@ -143,7 +150,16 @@ public class LoginView extends javax.swing.JFrame {
         } catch (Exception e) {
             System.err.println("Error en el botón Acceder: " + e);
             JOptionPane.showMessageDialog(null, "Error al iniciar sesión!");
-        }
+        }//Código agregado ->
+            finally {
+            // Asegúrate de cerrar los recursos en el bloque finally
+            try {
+                if (rs != null) rs.close();
+                if (pst != null) pst.close();
+            } catch (SQLException ex) {
+                System.err.println("Error al cerrar recursos: " + ex);
+            }
+        }/*Hasta aqui*/
 
     } else {
         JOptionPane.showMessageDialog(null, "Debes llenar todos los campos");
@@ -156,8 +172,8 @@ public class LoginView extends javax.swing.JFrame {
     }//GEN-LAST:event_txt_passwordActionPerformed
 
     private void jButton_RegistrarseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_RegistrarseActionPerformed
-        /*Indicar a donde ir después de darle al boton*/
         
+        /*Indicar a donde ir después de darle al boton*/
         RegisterView registrarUsuario = new RegisterView();
         registrarUsuario.setVisible(true);
         

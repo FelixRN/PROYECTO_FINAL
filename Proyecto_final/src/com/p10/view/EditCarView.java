@@ -16,12 +16,12 @@ import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.WindowConstants;
 
-public class CreateCarView extends javax.swing.JFrame {
+public class EditCarView extends javax.swing.JFrame {
     
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(CreateCarView.class.getName());
+    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(EditCarView.class.getName());
 
    
-    public CreateCarView() {
+    public EditCarView() {
         initComponents();
         setSize(650,430);
         setResizable(false);
@@ -57,8 +57,9 @@ public class CreateCarView extends javax.swing.JFrame {
         jLabel5 = new javax.swing.JLabel();
         txt_idCoche = new javax.swing.JTextField();
         jButton_Cancelar = new javax.swing.JButton();
-        jButton_Crear = new javax.swing.JButton();
+        jButton_EditCar = new javax.swing.JButton();
         jLabel8 = new javax.swing.JLabel();
+        jButton_Delete = new javax.swing.JButton();
         jLabel_Wallpaper = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -118,19 +119,22 @@ public class CreateCarView extends javax.swing.JFrame {
         });
         getContentPane().add(jButton_Cancelar, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 320, 120, 50));
 
-        jButton_Crear.setBackground(new java.awt.Color(153, 255, 153));
-        jButton_Crear.setText("CREAR");
-        jButton_Crear.addActionListener(new java.awt.event.ActionListener() {
+        jButton_EditCar.setBackground(new java.awt.Color(153, 255, 153));
+        jButton_EditCar.setText("Actualizar coche");
+        jButton_EditCar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton_CrearActionPerformed(evt);
+                jButton_EditCarActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton_Crear, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 320, 120, 50));
+        getContentPane().add(jButton_EditCar, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 320, 120, 50));
 
         jLabel8.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel8.setText("Maca");
         jLabel8.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         getContentPane().add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 70, 120, 20));
+
+        jButton_Delete.setText("Eliminar coche");
+        getContentPane().add(jButton_Delete, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 320, 120, 50));
         getContentPane().add(jLabel_Wallpaper, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 650, 430));
 
         pack();
@@ -140,7 +144,7 @@ public class CreateCarView extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_txt_idCocheActionPerformed
 
-    private void jButton_CrearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_CrearActionPerformed
+    private void jButton_EditCarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_EditCarActionPerformed
         
         int permisos_cmb, validacion = 0;
         String marca, modelo, matricula, anno;
@@ -226,7 +230,7 @@ public class CreateCarView extends javax.swing.JFrame {
             Logger.getLogger(RegisterView.class.getName()).log(Level.SEVERE, null, ex);
         }
         
-    }//GEN-LAST:event_jButton_CrearActionPerformed
+    }//GEN-LAST:event_jButton_EditCarActionPerformed
 
     private void jButton_CancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_CancelarActionPerformed
        UserView vistaUsuario = new UserView();
@@ -255,12 +259,13 @@ public class CreateCarView extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> new CreateCarView().setVisible(true));
+        java.awt.EventQueue.invokeLater(() -> new EditCarView().setVisible(true));
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton_Cancelar;
-    private javax.swing.JButton jButton_Crear;
+    private javax.swing.JButton jButton_Delete;
+    private javax.swing.JButton jButton_EditCar;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
