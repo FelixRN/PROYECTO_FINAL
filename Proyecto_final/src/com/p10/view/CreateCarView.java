@@ -56,8 +56,6 @@ public class CreateCarView extends javax.swing.JFrame {
         txt_matricula = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
         txt_anno = new javax.swing.JTextField();
-        jLabel5 = new javax.swing.JLabel();
-        txt_idCoche = new javax.swing.JTextField();
         jButton_Cancelar = new javax.swing.JButton();
         jButton_Crear = new javax.swing.JButton();
         jLabel8 = new javax.swing.JLabel();
@@ -98,19 +96,6 @@ public class CreateCarView extends javax.swing.JFrame {
         txt_anno.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         getContentPane().add(txt_anno, new org.netbeans.lib.awtextra.AbsoluteConstraints(450, 210, 160, -1));
 
-        jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel5.setText("ID coche");
-        jLabel5.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        getContentPane().add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 130, 120, 20));
-
-        txt_idCoche.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        txt_idCoche.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txt_idCocheActionPerformed(evt);
-            }
-        });
-        getContentPane().add(txt_idCoche, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 160, 160, -1));
-
         jButton_Cancelar.setBackground(new java.awt.Color(255, 51, 102));
         jButton_Cancelar.setText("CANCELAR");
         jButton_Cancelar.addActionListener(new java.awt.event.ActionListener() {
@@ -137,10 +122,6 @@ public class CreateCarView extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void txt_idCocheActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_idCocheActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txt_idCocheActionPerformed
 
     private void jButton_CrearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_CrearActionPerformed
         
@@ -293,12 +274,10 @@ public class CreateCarView extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel_Wallpaper;
     private javax.swing.JTextField txt_anno;
-    private javax.swing.JTextField txt_idCoche;
     private javax.swing.JTextField txt_marca;
     private javax.swing.JTextField txt_matricula;
     private javax.swing.JTextField txt_modelo;

@@ -1,0 +1,12 @@
+<!ELEMENT CorreoElectronico (#PCDATA)>
+<!ELEMENT mensaje (Remitente, Destinatario+, Asunto, Contendio)>
+<!ELEMENT Remitente (nombre, direccionEmail+)>
+<!ELEMENT Destinatario (nombre, direccionEmail)>
+<!ELEMENT Asunto EMPTY>
+<!ELEMENT Contenido (#PCDATA)>
+
+
+<!ELEMENT nombre (#PCDATA)>
+<!ELEMENT direccionEmail (#PCDATA)>
+
+<!ATTLIST Destinatario destPrincipal  (si|no) #REQUIRED>

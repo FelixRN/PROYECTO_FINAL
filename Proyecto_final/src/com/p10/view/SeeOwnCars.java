@@ -76,6 +76,7 @@ public class SeeOwnCars extends javax.swing.JFrame {
                     }
                     model.addRow(fila);
                 }
+                //this.dispose();
                 //cn.close();
                 
         } catch (SQLException e) {
@@ -97,7 +98,10 @@ public class SeeOwnCars extends javax.swing.JFrame {
                         car_update = (String)model.getValueAt(fila_point, columna_point);
                         EditCarView editarCoche = new EditCarView();
                         editarCoche.setVisible(true);
+                        
+                        SeeOwnCars.this.dispose();
                     }
+                    
                 }
             });
             

@@ -15,7 +15,7 @@ CREATE TABLE coche (
     marca VARCHAR(50) NOT NULL,
     modelo VARCHAR(50) NOT NULL,
     matricula VARCHAR(20) NOT NULL UNIQUE,
-    anio YEAR NOT NULL,
+    anio int NOT NULL,
     PRIMARY KEY (id_coche)
 );
 
@@ -54,4 +54,4 @@ INSERT INTO usuario (nombre, password ) VALUES('Felix', '12345');
 INSERT INTO coche (marca, modelo, matricula, anio ) VALUES('Volvo', 'CMD', 'DRD-123', '1999');
 
 
-SELECT * FROM usuario;
+SELECT * FROM coche;

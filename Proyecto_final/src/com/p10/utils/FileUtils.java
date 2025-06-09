@@ -20,5 +20,7 @@ public class FileUtils {
 	public static Path getFolderPath() {
 		return Paths.get("");
 	}
+        //Agregado->
+        //List<String> configLines= FileUtils.readLines(envPath.toString());
 
 }
