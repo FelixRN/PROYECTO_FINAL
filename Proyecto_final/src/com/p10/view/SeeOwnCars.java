@@ -1,22 +1,41 @@
 package com.p10.view;
 
+import com.p10.model.DatabaseConnection;
+import com.p10.model.entities.UsuarioSesion;
 import java.awt.Image;
 import java.awt.Toolkit;
+
+import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import javax.swing.Icon;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.IOException;
 import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
+import javax.swing.JTable;
 import javax.swing.WindowConstants;
+import javax.swing.table.DefaultTableModel;
 
 
 public class SeeOwnCars extends javax.swing.JFrame {
 
-    /**
-     * Creates new form SeeOwnCars
-     */
-    public SeeOwnCars() {
+    String user;
+    public static String car_update = "";
+    DefaultTableModel model = new DefaultTableModel();
+    
+    public SeeOwnCars() throws ClassNotFoundException {
         initComponents();
+        user = LoginView.user;
         setSize(650,430);
         setResizable(false);
-        setTitle("Coches propios");
+        setTitle("Coches propios - Sesión de " + user);
         setLocationRelativeTo(null);
         
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -26,6 +45,62 @@ public class SeeOwnCars extends javax.swing.JFrame {
             jLabel_Wallpaper.getHeight(), Image.SCALE_DEFAULT));
             jLabel_Wallpaper.setIcon(icono);
             this.repaint();
+   
+            
+            try {
+            Connection cn = DatabaseConnection.getConnection();
+                PreparedStatement pst = cn.prepareStatement(
+                   /* "select id_coche, marca, modelo, matricula, anio FROM coche");*/
+                        "SELECT c.id_coche, c.marca, c.modelo, c.matricula, c.anio " +
+                        "FROM coche c " +
+                        "INNER JOIN propietario p ON c.id_coche = p.id_coche " +
+                        "WHERE p.id_usuario = ?");
+                pst.setInt(1, UsuarioSesion.getIdUsuario()); // ID del usuario logueado
+                ResultSet rs = pst.executeQuery();
+                
+                jTable_Coches = new JTable(model);
+                jScrollPane1.setViewportView(jTable_Coches);
+                
+                model.addColumn("Id");
+                model.addColumn("Marca");
+                model.addColumn("Modelo");
+                model.addColumn("Matricula");
+                model.addColumn("Año");
+                
+                /*Si encontro resultado*/
+                while(rs.next()){
+                    Object[] fila = new Object[5];
+                    
+                    for (int i = 0; i < 5; i++) {
+                        fila[i] = rs.getObject(i + 1);
+                    }
+                    model.addRow(fila);
+                }
+                //cn.close();
+                
+        } catch (SQLException e) {
+            System.err.println("Error al llenar la tabla" + e);
+                JOptionPane.showMessageDialog(null, "Error al mostrar información !Contacte al administrador!");
+        }catch (ClassNotFoundException ex) {
+            Logger.getLogger(RegisterView.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(RegisterView.class.getName()).log(Level.SEVERE, null, ex);
+        }
+            
+            jTable_Coches.addMouseListener(new MouseAdapter(){
+                @Override
+                public void mouseClicked(MouseEvent e){
+                    int fila_point = jTable_Coches.rowAtPoint(e.getPoint());
+                    int columna_point = 2;
+                    
+                    if(fila_point > -1){
+                        car_update = (String)model.getValueAt(fila_point, columna_point);
+                        EditCarView editarCoche = new EditCarView();
+                        editarCoche.setVisible(true);
+                    }
+                }
+            });
+            
     }
          @Override
         public Image getIconImage(){
@@ -48,6 +123,7 @@ public class SeeOwnCars extends javax.swing.JFrame {
         jButton_Add = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable_Coches = new javax.swing.JTable();
+        jLabel1 = new javax.swing.JLabel();
         jLabel_Wallpaper = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -59,7 +135,7 @@ public class SeeOwnCars extends javax.swing.JFrame {
                 jButton_InfoActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton_Info, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 300, 130, 60));
+        getContentPane().add(jButton_Info, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 300, 130, 60));
 
         jButton_Edit.setText("Editar / Eliminar");
         jButton_Edit.addActionListener(new java.awt.event.ActionListener() {
@@ -75,7 +151,7 @@ public class SeeOwnCars extends javax.swing.JFrame {
                 jButton_AddActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton_Add, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 300, 130, 60));
+        getContentPane().add(jButton_Add, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 300, 130, 60));
 
         jTable_Coches.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -90,7 +166,11 @@ public class SeeOwnCars extends javax.swing.JFrame {
         ));
         jScrollPane1.setViewportView(jTable_Coches);
 
-        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 20, 560, 220));
+        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 60, 560, 220));
+
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel1.setText("COCHES PROPIOS");
+        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 16, 280, 30));
         getContentPane().add(jLabel_Wallpaper, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 650, 430));
 
         pack();
@@ -102,7 +182,7 @@ public class SeeOwnCars extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton_AddActionPerformed
 
     private void jButton_EditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_EditActionPerformed
-        CreateCarView CrearCoche = new CreateCarView();
+        EditCarView CrearCoche = new EditCarView();
         CrearCoche.setVisible(true);
     }//GEN-LAST:event_jButton_EditActionPerformed
 
@@ -139,17 +219,26 @@ public class SeeOwnCars extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
+        /*java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new SeeOwnCars().setVisible(true);
             }
+        });*/
+        java.awt.EventQueue.invokeLater(() -> {
+            try {
+                new SeeOwnCars().setVisible(true);
+            } catch (ClassNotFoundException ex) {
+                System.getLogger(SeeOwnCars.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+            }
         });
+        
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton_Add;
     private javax.swing.JButton jButton_Edit;
     private javax.swing.JButton jButton_Info;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel_Wallpaper;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable_Coches;

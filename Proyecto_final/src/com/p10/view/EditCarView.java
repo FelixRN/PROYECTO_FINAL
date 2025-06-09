@@ -19,13 +19,19 @@ import javax.swing.WindowConstants;
 public class EditCarView extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(EditCarView.class.getName());
+    
+    String user ="", car_update ="";
+    int ID;
 
    
     public EditCarView() {
         initComponents();
+        user = LoginView.user;
+        car_update =  SeeOwnCars.car_update;
+        
         setSize(650,430);
         setResizable(false);
-        setTitle("Crear coche");
+        setTitle("Información del coche " + car_update + "- Sesion de " + user);
         setLocationRelativeTo(null);
         
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -35,6 +41,35 @@ public class EditCarView extends javax.swing.JFrame {
             jLabel_Wallpaper.getHeight(), Image.SCALE_DEFAULT));
             jLabel_Wallpaper.setIcon(icono);
             this.repaint();
+            //Pendiente de modificar o eliminar:
+        jLabel_Titulo.setText("Información del coche de " + car_update);    
+            
+         try {
+            Connection cn = DatabaseConnection.getConnection(); 
+                PreparedStatement pst = cn.prepareStatement(
+                    "select * from coche where modelo = ?");
+                pst.setString(1, car_update);
+                ResultSet rs = pst.executeQuery();
+                
+                if(rs.next()){
+                    ID = rs.getInt("id_coche");
+                    
+                /*Agregado->*/    txt_idCoche.setText(rs.getString("id_coche"));
+                    txt_marca.setText(rs.getString("marca"));
+                    txt_modelo.setText(rs.getString("modelo"));
+                    txt_matricula.setText(rs.getString("matricula"));
+                    txt_anno.setText(rs.getString("anio"));//Si no funciona cambiarlo por int en la base de datos
+                }
+                //rs.close();
+                //pst.close();
+                //cn.close();
+        } catch (SQLException e) {
+        System.err.println("Error SQL al cargar coche: " + e);
+        JOptionPane.showMessageDialog(null, "ERROR al cargar. contacte al administrador!");
+        } catch (Exception e) {
+        System.err.println("Error general al cargar coche: " + e);
+        JOptionPane.showMessageDialog(null, "ERROR al cargar. contacte al administrador!");
+        }
         }
     
      @Override
@@ -60,6 +95,7 @@ public class EditCarView extends javax.swing.JFrame {
         jButton_EditCar = new javax.swing.JButton();
         jLabel8 = new javax.swing.JLabel();
         jButton_Delete = new javax.swing.JButton();
+        jLabel_Titulo = new javax.swing.JLabel();
         jLabel_Wallpaper = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -135,6 +171,11 @@ public class EditCarView extends javax.swing.JFrame {
 
         jButton_Delete.setText("Eliminar coche");
         getContentPane().add(jButton_Delete, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 320, 120, 50));
+
+        jLabel_Titulo.setFont(new java.awt.Font("Arial", 0, 20)); // NOI18N
+        jLabel_Titulo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel_Titulo.setText("Editar coche");
+        getContentPane().add(jLabel_Titulo, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 10, 280, 40));
         getContentPane().add(jLabel_Wallpaper, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 650, 430));
 
         pack();
@@ -146,95 +187,96 @@ public class EditCarView extends javax.swing.JFrame {
 
     private void jButton_EditCarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_EditCarActionPerformed
         
-        int permisos_cmb, validacion = 0;
-        String marca, modelo, matricula, anno;
+        int  validacion = 0;
+        String marca, modelo, matricula, anio;
         
         marca = txt_marca.getText().trim();
         modelo = txt_modelo.getText().trim();
         matricula = txt_matricula.getText().trim();
-        anno = txt_anno.getText().trim();
+        anio = txt_anno.getText().trim();
         
-        
-        //ComboBox permisos_cmb = cmb_niveles.getSelectedIndex() + 1;
-        
-        if(marca.equals("")){
-            txt_marca.setBackground(Color.RED);
+        if (marca.equals("")) {
+            txt_marca.setBackground(Color.red);
             validacion++;
         }
-        if(modelo.equals("")){
-            txt_modelo.setBackground(Color.RED);
+        if (modelo.equals("")) {
+            txt_modelo.setBackground(Color.red);
             validacion++;
         }
-        if(matricula.equals("")){
-            txt_matricula.setBackground(Color.RED);
+        if (matricula.equals("")) {
+            txt_matricula.setBackground(Color.red);
             validacion++;
         }
-        if(anno.equals("")){
-            txt_anno.setBackground(Color.RED);
+        if (anio.equals("")) {
+            txt_anno.setBackground(Color.red);
             validacion++;
         }
         
-    try {
-            Connection cn = DatabaseConnection.getConnection(); 
+        if (validacion == 0 ) {
+            
+            try {
+                Connection cn = DatabaseConnection.getConnection(); 
                 PreparedStatement pst = cn.prepareStatement(
-                    "SELECT matricula FROM coche WHERE matricula = '" + matricula + "'");
+                    "select * from coche where modelo = ? and id_coche != ?");
+                pst.setString(1, modelo);
+                pst.setInt(2, ID);
+                
                 ResultSet rs = pst.executeQuery();
                 
                 if (rs.next()) {
-                txt_matricula.setBackground(Color.RED);
-                    JOptionPane.showMessageDialog(null, "Nombre de usuario no disponible.");
-                    return;
-            } else {
-            
-                    if (validacion == 0) {
-                        try {
-                             Connection cn2 = DatabaseConnection.getConnection(); 
-                             PreparedStatement pst2 = cn2.prepareStatement(
-                                "INSERT INTO coche (marca, modelo, matricula, anio) VALUES(?, ?, ?,?)");
-                             //Insertar valores dentro de la BBDD
-                            pst2.setString(1, marca);
-                            pst2.setString(2, modelo);
-                            pst2.setString(3, matricula);
-                            pst2.setString(4, anno);
-                            
-                            pst2.executeUpdate();
-                            
-                            Limpiar();
-                            
-                            txt_marca.setBackground(Color.GREEN);
-                            txt_modelo.setBackground(Color.GREEN);
-                            txt_matricula.setBackground(Color.GREEN);
-                            txt_anno.setBackground(Color.GREEN);
-                            
-                            
-                            JOptionPane.showMessageDialog(null, "Registro del coche exitoso.");
-                            this.dispose();
-                            
-                        } catch (SQLException e) {
-                            System.err.println("Error en registrar coche" + e);
-                            JOptionPane.showMessageDialog(null, "ERROR al registrar!, Contacta al administrador.");
-                        }
-                    } else {
-                        JOptionPane.showMessageDialog(null, "Debes llenar todos los campos.");
-
-                        
-                    }
                     
+                    txt_modelo.setBackground(Color.red);
+                    JOptionPane.showMessageDialog(null, "Nombre de modelo  no disponilbe");
+                    //cn.close
+                    
+                } else {
+                    
+                Connection cn2 = DatabaseConnection.getConnection(); 
+                PreparedStatement pst2 = cn2.prepareStatement(
+                    "update coche set marca=?, modelo=?, matricula=?, anio=? where id_coche = ?");
+                
+                pst2.setString(1, marca);
+                pst2.setString(2, modelo);
+                pst2.setString(3, matricula);
+                pst2.setString(4, anio);
+                pst2.setInt(5, ID);
+                
+                pst2.executeUpdate();
+                //cn2.close();
+                JOptionPane.showMessageDialog(null, "Modificación correcta");
+                    
+                }
+                
+                
+            } catch (SQLException e) {
+                System.err.println("Error al actualizar");
+          /*  } catch (ClassNotFoundException ex) {
+                System.getLogger(EditCarView.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);*/
+            } catch (Exception ex) {
+                System.getLogger(EditCarView.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+                /*Agregado ->*/JOptionPane.showMessageDialog(null, "Error inesperado");
             }
-        } catch (SQLException e) {
-            System.err.println("Error en validar matricula de usuario" + e);
-            JOptionPane.showMessageDialog(null, "ERROR al comparar matricula!, contacte al administrador.");
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(RegisterView.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(RegisterView.class.getName()).log(Level.SEVERE, null, ex);
+            
+            JOptionPane.showMessageDialog(null, "Debes llenar todo el campo!");
+        } else {
+            
         }
         
     }//GEN-LAST:event_jButton_EditCarActionPerformed
 
     private void jButton_CancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_CancelarActionPerformed
-       UserView vistaUsuario = new UserView();
-       vistaUsuario.setVisible(true);
+       SeeOwnCars vistaUsuario;
+        try {
+            vistaUsuario = new SeeOwnCars();
+            vistaUsuario.setVisible(true);
+        } catch (ClassNotFoundException ex) {
+            JOptionPane.showMessageDialog(this,
+                    "Error al cargar la ventana " + ex.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
+            System.err.println("Error al instaciar SeeOwnCars: " + ex);
+        }
+               
+       
     }//GEN-LAST:event_jButton_CancelarActionPerformed
 
     /**
@@ -272,6 +314,7 @@ public class EditCarView extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel_Titulo;
     private javax.swing.JLabel jLabel_Wallpaper;
     private javax.swing.JTextField txt_anno;
     private javax.swing.JTextField txt_idCoche;

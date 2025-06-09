@@ -6,17 +6,25 @@ public class Car {
     private String modelo;
     private String matricula;
     private int anio;
+    private String id_usuario_creador;
+
+    
+
+    public void setId_usuario_creador(String id_usuario_creador) {
+        this.id_usuario_creador = id_usuario_creador;
+    }
     
     // Constructor vacío
     public Car() {
     }
 
-    public Car(int id, String marca, String modelo, String matricula, int anio) {
+    public Car(int id, String marca, String modelo, String matricula, int anio, String id_usuario_creador) {
         this.id = id;
         this.marca = marca;
         this.modelo = modelo;
         this.matricula = matricula;
         this.anio = anio;
+        this.id_usuario_creador = id_usuario_creador;
     }
 
     public int getId() {
@@ -58,7 +66,10 @@ public class Car {
     public void setAnio(int anio) {
         this.anio = anio;
     }
-
+    
+    public String getId_usuario_creador() {
+        return id_usuario_creador;
+    }
     @Override
     public String toString() {
         return "Car{" +

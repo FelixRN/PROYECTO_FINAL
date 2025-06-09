@@ -1,5 +1,6 @@
 package com.p10.view;
 
+import com.p10.model.entities.UsuarioSesion;
 import com.p10.model.DatabaseConnection;
 import java.awt.Color;
 import java.awt.Image;
@@ -15,6 +16,7 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.WindowConstants;
+import java.sql.Statement;
 
 public class CreateCarView extends javax.swing.JFrame {
     
@@ -151,6 +153,7 @@ public class CreateCarView extends javax.swing.JFrame {
         anno = txt_anno.getText().trim();
         
         
+        
         //ComboBox permisos_cmb = cmb_niveles.getSelectedIndex() + 1;
         
         if(marca.equals("")){
@@ -186,14 +189,42 @@ public class CreateCarView extends javax.swing.JFrame {
                         try {
                              Connection cn2 = DatabaseConnection.getConnection(); 
                              PreparedStatement pst2 = cn2.prepareStatement(
-                                "INSERT INTO coche (marca, modelo, matricula, anio) VALUES(?, ?, ?,?)");
+                               /* "INSERT INTO coche (marca, modelo, matricula, anio) VALUES(?, ?, ?,?)");*/
+                                "INSERT INTO coche (marca, modelo, matricula, anio) VALUES(?, ?, ?, ?)",
+                                     Statement.RETURN_GENERATED_KEYS);
+                             //AGREGADO NUEVO
+                             //OPCIONAL Statement.RETURN_GENERATED_KEYS);
                              //Insertar valores dentro de la BBDD
                             pst2.setString(1, marca);
                             pst2.setString(2, modelo);
                             pst2.setString(3, matricula);
                             pst2.setString(4, anno);
                             
-                            pst2.executeUpdate();
+                            int filasAfectadas = pst2.executeUpdate();
+                            
+                            if(filasAfectadas > 0) {
+                                // Obtener el ID del coche recién creado
+                               ResultSet generatedKeys = pst2.getGeneratedKeys();
+                               if(generatedKeys.next()) {
+                               int idCoche = generatedKeys.getInt(1);
+            
+                               // Insertar la relación de propiedad
+                               PreparedStatement pstPropietario = cn2.prepareStatement(
+                                "INSERT INTO propietario (id_usuario, id_coche) VALUES(?, ?)");
+            
+                               pstPropietario.setInt(1, UsuarioSesion.getIdUsuario()); // ID del usuario logueado
+                               pstPropietario.setInt(2, idCoche);
+            
+                               pstPropietario.executeUpdate();
+                               pstPropietario.close();
+                            }
+                               generatedKeys.close();
+                           }
+                             //  pst2.close();
+                             // cn2.close();
+                            
+                            
+                           // pst2.executeUpdate();
                             
                             Limpiar();
                             
@@ -211,9 +242,7 @@ public class CreateCarView extends javax.swing.JFrame {
                             JOptionPane.showMessageDialog(null, "ERROR al registrar!, Contacta al administrador.");
                         }
                     } else {
-                        JOptionPane.showMessageDialog(null, "Debes llenar todos los campos.");
-
-                        
+                        JOptionPane.showMessageDialog(null, "Debes llenar todos los campos.");  
                     }
                     
             }

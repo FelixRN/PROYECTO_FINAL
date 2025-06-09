@@ -2,6 +2,7 @@ package com.p10.view;
 import com.p10.model.entities.User;
 
 import com.p10.model.DatabaseConnection;
+import com.p10.model.entities.UsuarioSesion;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.sql.Connection;
@@ -126,19 +127,20 @@ public class LoginView extends javax.swing.JFrame {
             ResultSet rs = null;
             //Hasta aqui
             try {
-                /*Connection cn = DatabaseConnection.getConnection(); 
-                PreparedStatement pst = cn.prepareStatement*/
-                cn = DatabaseConnection.getConnection(); // Obtener la conexión
-                pst = cn.prepareStatement(
-                    "SELECT nombre FROM usuario "
+                cn = DatabaseConnection.getConnection(); 
+                pst = cn.prepareStatement(//CAMBIAMOS EL NOMBRE POR ID_USUARIO
+                    "SELECT id_usuario, nombre FROM usuario "
                             + "WHERE nombre = ? AND password = ?");
                 
             pst.setString(1, user);
             pst.setString(2, pass);
             rs = pst.executeQuery();
-            //Agregar si la anterior linea no funciona -> ResultSet rs = pst.executeQuery();
-
+            
             if (rs.next()) {
+             /*Agregado*/   int idUsuario = rs.getInt("id_usuario");
+             /*Agregado*/   String nombreUsuario = rs.getString("nombre");
+             /*Agregado*/   UsuarioSesion.setUsuario(idUsuario, nombreUsuario);
+              /*Agregado*/  System.out.println("Login exitoso para: " + nombreUsuario);
                 dispose();
                 new UserView().setVisible(true);
             } else {

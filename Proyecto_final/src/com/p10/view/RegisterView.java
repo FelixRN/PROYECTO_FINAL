@@ -4,21 +4,25 @@
  */
 package com.p10.view;
 
-import java.sql.ResultSet;
+
 
 import com.p10.model.DatabaseConnection;
-import java.awt.Color;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 
+import java.awt.Color;
 import java.awt.Image;
 import java.awt.Toolkit;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.ResultSet;
+
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.WindowConstants;
 import java.io.IOException;
-import java.sql.SQLException;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
 

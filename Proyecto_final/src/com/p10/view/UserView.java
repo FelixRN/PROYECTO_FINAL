@@ -195,8 +195,16 @@ private void cargarDatosUsuario() {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton_VerCochesPropiosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_VerCochesPropiosActionPerformed
-        SeeOwnCars CochesPropios = new SeeOwnCars();
-        CochesPropios.setVisible(true);
+        SeeOwnCars CochesPropios;
+        try {
+            CochesPropios = new SeeOwnCars();
+            CochesPropios.setVisible(true);
+        } catch (ClassNotFoundException ex) {
+            JOptionPane.showMessageDialog(this,
+                    "Error al cargar la ventana " + ex.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
+            System.err.println("Error al instaciar SeeOwnCars: " + ex);
+        }
     }//GEN-LAST:event_jButton_VerCochesPropiosActionPerformed
 
     private void jButton_CrearCocheActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_CrearCocheActionPerformed
