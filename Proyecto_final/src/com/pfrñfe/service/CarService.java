@@ -105,7 +105,26 @@ public class CarService {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
-    public CarDto findByModelo(String car_update) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public CarDto findByModelo(String modelo) throws SQLException, IOException, ClassNotFoundException {
+    CarDto car = null;
+
+    String query = "SELECT * FROM coche WHERE modelo = ?";
+    try (Connection cn = DatabaseConnection.getConnection();
+         PreparedStatement pst = cn.prepareStatement(query)) {
+
+        pst.setString(1, modelo);
+        ResultSet rs = pst.executeQuery();
+
+        if (rs.next()) {
+            car = new CarDto(
+                    rs.getInt("id_coche"),
+                    rs.getString("marca"),
+                    rs.getString("modelo"),
+                    rs.getString("matricula"),
+                    rs.getInt("anio")
+            );
+        }
     }
+    return car;
+}
 }

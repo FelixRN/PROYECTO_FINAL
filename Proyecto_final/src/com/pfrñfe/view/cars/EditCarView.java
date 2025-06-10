@@ -50,7 +50,11 @@ public class EditCarView extends javax.swing.JFrame {
     }
      
      private void cargarDatosCar() {
-         car = carService.findByModelo(car_update);
+        try {
+            car = carService.findByModelo(car_update);
+        } catch (SQLException | IOException | ClassNotFoundException e ) {
+            System.out.println(e);
+        } 
          if (car != null) {
              txt_marca.setText(car.getMarca());
              txt_modelo.setText(car.getModelo());

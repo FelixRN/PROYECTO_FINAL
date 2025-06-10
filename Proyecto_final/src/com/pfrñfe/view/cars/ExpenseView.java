@@ -305,10 +305,7 @@ public class ExpenseView extends javax.swing.JFrame {
 
     public void expenseView() {
         java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new ExpenseView().setVisible(true);
-            }
-        });
+            );
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
