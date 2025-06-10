@@ -30,7 +30,7 @@ CREATE TABLE propietario (
 CREATE TABLE gastos (
     id_gastos INT AUTO_INCREMENT PRIMARY KEY,
     id_coche INT NOT NULL,
-    tipo ENUM('gasolina', 'revision', 'itv', 'cambio_aceite', 'otros') NOT NULL,
+    tipo ENUM('Gasolina', 'Revision', 'ITV', 'Cambio_aceite', 'Otros') NOT NULL,
     kilometraje INT NOT NULL,
     fecha_gasto DATE NOT NULL,
     importe DECIMAL(10,2) NOT NULL,
@@ -38,17 +38,6 @@ CREATE TABLE gastos (
     fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (id_coche) REFERENCES coche(id_coche) ON DELETE CASCADE
 );
-
-
-/*CREATE INDEX idx_usuario_codigo_uuid ON usuario(codigo_uuid);
-CREATE INDEX idx_coche_matricula ON coche(matricula);
-CREATE INDEX idx_propietario_usuario ON propietario(id_propietario);
-CREATE INDEX idx_propietario_coche ON propietario(id_coche);
-CREATE INDEX idx_gasto_coche ON gastos(id_coche);
-CREATE INDEX idx_gasto_fecha ON gastos(fecha_gasto);
-CREATE INDEX idx_gasto_tipo ON gastos(tipo);
-CREATE INDEX idx_gasto_kilometraje ON gastos(kilometraje);*/
-
 
 INSERT INTO usuario (nombre, password ) VALUES('Felix', '12345');
 INSERT INTO coche (marca, modelo, matricula, anio ) VALUES('Volvo', 'CMD', 'DRD-123', '1999');
