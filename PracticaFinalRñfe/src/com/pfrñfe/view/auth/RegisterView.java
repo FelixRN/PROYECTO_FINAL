@@ -134,12 +134,7 @@ public class RegisterView extends javax.swing.JFrame {
             txt_passwordNew.setBackground(Color.RED);
             validacion++;
         }
-        /*Obetener y seleccionar el id_car
-        if(permisos_cmb.equals ==1){
-            id_coche = ; ;
-            validacion++;
-        }
-        */
+        
         
         try {
             Connection cn = DatabaseConnection.getConnection(); 

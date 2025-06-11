@@ -4,6 +4,7 @@ import com.pfrñfe.controller.IMainController;
 import com.pfrñfe.controller.MainController;
 import com.pfrñfe.controller.CarController;
 import com.pfrñfe.model.DatabaseConnection;
+import com.pfrñfe.utils.UsuarioSesion;
 import com.pfrñfe.view.UserView;
 
 import java.awt.Color;
@@ -14,6 +15,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.Icon;
@@ -165,7 +167,18 @@ public class CreateCarView extends javax.swing.JFrame {
         return;
     }
 
-    try (Connection cn = DatabaseConnection.getConnection()) {
+    if (!UsuarioSesion.hayUsuarioLogueado()) {
+        JOptionPane.showMessageDialog(null, "Error: No hay usuario logueado.");
+        return;
+    }
+    
+    Connection cn = null;
+    
+    
+    try {
+        cn = DatabaseConnection.getConnection();
+        cn.setAutoCommit(false); // Iniciar transacción
+        
         // Verificar si la matrícula ya existe
         String checkQuery = "SELECT 1 FROM coche WHERE matricula = ?";
         try (PreparedStatement pstCheck = cn.prepareStatement(checkQuery)) {
@@ -180,31 +193,85 @@ public class CreateCarView extends javax.swing.JFrame {
         }
 
         // Insertar nuevo coche
-        String insertQuery = "INSERT INTO coche (marca, modelo, matricula, anio) VALUES (?, ?, ?, ?)";
-        try (PreparedStatement pstInsert = cn.prepareStatement(insertQuery)) {
+        String insertCarQuery = "INSERT INTO coche (marca, modelo, matricula, anio) VALUES (?, ?, ?, ?)";
+        int idCocheGenerado;
+        
+        try (PreparedStatement pstInsert = cn.prepareStatement(insertCarQuery, Statement.RETURN_GENERATED_KEYS)) {
             pstInsert.setString(1, marca);
             pstInsert.setString(2, modelo);
             pstInsert.setString(3, matricula);
-            pstInsert.setInt(4, Integer.parseInt(anno)); // ← conversión segura
+            pstInsert.setInt(4, Integer.parseInt(anno));
 
-            pstInsert.executeUpdate();
+            int filasAfectadas = pstInsert.executeUpdate();
+            
+            if (filasAfectadas == 0) {
+                throw new SQLException("Error al crear el coche, no se insertaron filas.");
+            }
 
-            Limpiar();
-            txt_marca.setBackground(Color.GREEN);
-            txt_modelo.setBackground(Color.GREEN);
-            txt_matricula.setBackground(Color.GREEN);
-            txt_anno.setBackground(Color.GREEN);
-
-            JOptionPane.showMessageDialog(null, "Registro del coche exitoso.");
-            this.dispose();
+            // Obtener el ID del coche recién creado
+            try (ResultSet generatedKeys = pstInsert.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    idCocheGenerado = generatedKeys.getInt(1);
+                } else {
+                    throw new SQLException("Error al crear el coche, no se obtuvo el ID.");
+                }
+            }
         }
 
+        // Insertar la relación propietario-coche
+        String insertOwnerQuery = "INSERT INTO propietario (id_usuario, id_coche) VALUES (?, ?)";
+        try (PreparedStatement pstOwner = cn.prepareStatement(insertOwnerQuery)) {
+            pstOwner.setInt(1, UsuarioSesion.getIdUsuario());
+            pstOwner.setInt(2, idCocheGenerado);
+            
+            int filasAfectadas = pstOwner.executeUpdate();
+            
+            if (filasAfectadas == 0) {
+                throw new SQLException("Error al asignar el coche al propietario.");
+            }
+        }
+
+        // Si llegamos aquí, todo salió bien - confirmar transacción
+        cn.commit();
+        
+        // Debug
+        System.out.println("Coche creado exitosamente:");
+        System.out.println("- ID Coche: " + idCocheGenerado);
+        System.out.println("- ID Usuario: " + UsuarioSesion.getIdUsuario());
+        System.out.println("- Marca: " + marca);
+        System.out.println("- Modelo: " + modelo);
+        System.out.println("- Matrícula: " + matricula);
+
+        Limpiar();
+        txt_marca.setBackground(Color.GREEN);
+        txt_modelo.setBackground(Color.GREEN);
+        txt_matricula.setBackground(Color.GREEN);
+        txt_anno.setBackground(Color.GREEN);
+
+        JOptionPane.showMessageDialog(null, "Registro del coche exitoso.");
+        this.dispose();
+
     } catch (NumberFormatException e) {
+        if (cn != null) {
+            try { cn.rollback(); } catch (SQLException ex) { ex.printStackTrace(); }
+        }
         txt_anno.setBackground(Color.RED);
         JOptionPane.showMessageDialog(null, "El año debe ser un número válido.");
     } catch (SQLException | IOException | ClassNotFoundException e) {
+        if (cn != null) {
+            try { cn.rollback(); } catch (SQLException ex) { ex.printStackTrace(); }
+        }
         System.err.println("Error en el registro de coche: " + e);
+        e.printStackTrace();
         JOptionPane.showMessageDialog(null, "ERROR al registrar el coche. Contacta al administrador.");
+    } finally {
+        if (cn != null) {
+            try {
+                cn.setAutoCommit(true); // Restaurar autocommit
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
     }
              
     }//GEN-LAST:event_jButton_ApplyActionPerformed

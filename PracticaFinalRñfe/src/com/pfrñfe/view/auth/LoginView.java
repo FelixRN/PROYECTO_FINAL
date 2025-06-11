@@ -121,16 +121,19 @@ public class LoginView extends javax.swing.JFrame {
         System.out.println("Password ingresado: '" + pass + "'");
         
         if (!user.equals("") && !pass.equals("")) {
-            //Código agregado, si no funciona eliminar
-            Connection cn = null; // Inicializar a null
+           
+            Connection cn = null; 
             PreparedStatement pst = null;
             ResultSet rs = null;
             //Hasta aqui
             try {
                 cn = DatabaseConnection.getConnection(); 
-                pst = cn.prepareStatement(//CAMBIAMOS EL NOMBRE POR ID_USUARIO
+                //???
+                String query = "SELECT id_usuario, nombre FROM usuario WHERE nombre = ? AND password = ?";
+                pst = cn.prepareStatement(query);
+                /*pst = cn.prepareStatement(//CAMBIAMOS EL NOMBRE POR ID_USUARIO
                     "SELECT id_usuario, nombre FROM usuario "
-                            + "WHERE nombre = ? AND password = ?");
+                            + "WHERE nombre = ? AND password = ?");*/
                 
             pst.setString(1, user);
             pst.setString(2, pass);
