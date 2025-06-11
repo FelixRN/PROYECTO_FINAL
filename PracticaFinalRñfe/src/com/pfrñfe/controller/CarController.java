@@ -18,4 +18,9 @@ public class CarController implements ICarController {
     public void newCar(String modelo, String marca, String matricula, String anno) {
         carModel.newCar(modelo, marca, matricula, anno);
     }
+
+    @Override
+    public boolean existeMatricula(String matricula, int idCocheActual) throws SQLException, IOException, ClassNotFoundException {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 }

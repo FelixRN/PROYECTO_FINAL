@@ -113,4 +113,14 @@ public class CarModel implements ICarModel {
             return rs.next();
         }
     }
+    public boolean existeMatricula(String matricula, int idCocheActual) throws SQLException, IOException, ClassNotFoundException {
+    String query = "SELECT 1 FROM coche WHERE matricula = ? AND id_coche != ?";
+    try (PreparedStatement pst = connection.prepareStatement(query)) {
+        pst.setString(1, matricula);
+        pst.setInt(2, idCocheActual);
+        ResultSet rs = pst.executeQuery();
+        return rs.next();
+    }
+    
+    }
 }
