@@ -1,11 +1,16 @@
 
 package com.pfrñfe.view.cars;
-import com.pfrñfe.view.cars.SeeOwnCars;
-import com.pfrñfe.model.DatabaseConnection;
 
+import com.pfrñfe.controller.ExpenseController;
+import com.pfrñfe.controller.IExpenseController;
+import com.pfrñfe.model.DatabaseConnection;
+import com.pfrñfe.model.entities.Expense;
+import com.pfrñfe.model.repository.ExpenseModel;
+import com.pfrñfe.model.repository.IExpenseModel;
 
 import java.awt.Image;
 import java.awt.Toolkit;
+import java.io.IOException;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
@@ -13,9 +18,9 @@ import javax.swing.WindowConstants;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+
 import java.sql.SQLException;
-import java.sql.Statement;
+
 import java.util.Map;
 
 /**
@@ -28,6 +33,8 @@ public class ExpenseView extends javax.swing.JFrame {
     public boolean modoEdicion = false; 
     public int idGastoActual; 
     
+    private IExpenseController expenseController;
+    
     private final Map<String, String> tipoMap = Map.of(
     "Gasolina", "gasolina",
     "Revisión", "revision",
@@ -35,11 +42,16 @@ public class ExpenseView extends javax.swing.JFrame {
     "Cambio de aceite", "cambio_aceite",
     "Otros", "otros"
 );
-
-    
+  
     public ExpenseView() {
         initComponents();
-        /*this.idCoche = idCoche;*/
+        
+        try {
+            this.expenseController = new ExpenseController();
+        } catch (ClassNotFoundException | SQLException | IOException e) {
+            JOptionPane.showMessageDialog(this, "Error interno al cargar controlador de gastos: " + e.getMessage());
+        }
+        
         setSize(650,430);
         setResizable(false);
         setTitle("Gastos");
@@ -57,48 +69,31 @@ public class ExpenseView extends javax.swing.JFrame {
     }
     public void cargarUltimoGastoDelCoche() {
         if (idCoche <= 0) {
-        JOptionPane.showMessageDialog(this, "ID de coche no válido.");
-        return;
+            JOptionPane.showMessageDialog(this, "ID de coche no válido.");
+            return;
         }
-        
-        try {
-            Connection cn = DatabaseConnection.getConnection(); 
-                PreparedStatement pst = cn.prepareStatement(
-                   "SELECT * FROM gastos WHERE id_coche = ? ORDER BY fecha_gasto DESC LIMIT 1");
-                
-                pst.setInt(1, idCoche);
-                ResultSet rs = pst.executeQuery();
-                if(rs.next()){
-                txt_km.setText(String.valueOf(rs.getString("kilometraje")));
-                txt_date.setText(rs.getDate("fecha_gasto").toString()); // yyyy-MM-dd
-                txt_cost.setText(String.valueOf(rs.getDouble("importe")));
-                txt_descripcion.setText(rs.getString("descripcion"));
+         Map<String, Object> expenseData = expenseController.getLastExpenseByCarId(idCoche);
 
-                String tipo = rs.getString("tipo");
-                jComboBox.setSelectedItem(capitalizeFirst(tipo));
-                
-                 // Guarda id_gasto si luego quieres editar
-                idGastoActual = rs.getInt("id_gastos");
-                modoEdicion = true;
-            } else {
-                // No hay gastos previos, será modo creación
-                modoEdicion = false;
-        }
-                
-               
-        } catch (SQLException e) {
-        System.err.println("Error SQL al cargar coche: " + e);
-        JOptionPane.showMessageDialog(null, "ERROR al cargar. contacte al administrador!");
-        } catch (Exception e) {
-        System.err.println("Error general al cargar coche: " + e);
-        JOptionPane.showMessageDialog(null, "ERROR al cargar. contacte al administrador!");
-        }
-    }    
-        private String capitalizeFirst(String value){
-        if (value == null || value.isEmpty()) return value;
-        return value.substring(0,1).toUpperCase() + value.substring(1).toLowerCase();
+        if (expenseData != null && !expenseData.isEmpty()) {
+            txt_km.setText(String.valueOf(expenseData.get("kilometraje")));
+            txt_date.setText(expenseData.get("fecha_gasto").toString());
+            txt_cost.setText(String.valueOf(expenseData.get("importe")));
+            txt_descripcion.setText((String) expenseData.get("descripcion"));
 
-        
+            String tipo = (String) expenseData.get("tipo");
+            jComboBox.setSelectedItem(capitalizeFirst(tipo));
+
+            idGastoActual = (int) expenseData.get("id_gastos");
+            modoEdicion = true;
+        } else {
+            modoEdicion = false;
+        }
+    }
+
+    private String capitalizeFirst(String value) {
+        if (value == null || value.isEmpty()) 
+            return value;
+        return value.substring(0, 1).toUpperCase() + value.substring(1).toLowerCase();
     }
     
     

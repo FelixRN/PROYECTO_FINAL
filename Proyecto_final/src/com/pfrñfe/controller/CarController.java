@@ -1,13 +1,21 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.pfrñfe.controller;
 
-/**
- *
- * @author Yo y tu
- */
-public class CarController {
-    
+import com.pfrñfe.model.repository.CarModel;
+import com.pfrñfe.model.repository.ICarModel;
+
+import java.io.IOException;
+import java.sql.SQLException;
+
+public class CarController implements ICarController {
+
+    private ICarModel carModel;
+
+    public CarController() throws ClassNotFoundException, SQLException, IOException {
+        this.carModel = new CarModel();
+    }
+
+    @Override
+    public void newCar(String modelo, String marca, String matricula, String anno) {
+        carModel.newCar(modelo, marca, matricula, anno);
+    }
 }

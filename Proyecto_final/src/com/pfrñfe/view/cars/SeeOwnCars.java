@@ -62,8 +62,10 @@ public class SeeOwnCars extends javax.swing.JFrame {
                         "FROM coche c " +
                         "INNER JOIN propietario p ON c.id_coche = p.id_coche " +
                         "WHERE p.id_usuario = ?");
-                pst.setInt(1, UsuarioSesion.getIdUsuario()); // ID del usuario logueado
+                pst.setInt(1, UsuarioSesion.getIdUsuario()); 
                 ResultSet rs = pst.executeQuery();
+            /*Provisional->*/    System.out.println("ID del usuario en sesión: " + UsuarioSesion.getIdUsuario());
+
                 
                 jTable_Coches = new JTable(model);
                 jScrollPane1.setViewportView(jTable_Coches);
@@ -86,6 +88,7 @@ public class SeeOwnCars extends javax.swing.JFrame {
                 
         } catch (SQLException e) {
             System.err.println("Error al llenar la tabla" + e);
+                System.err.println("Error al llenar la tabla" + e);
                 JOptionPane.showMessageDialog(null, "Error al mostrar información !Contacte al administrador!");
         }catch (ClassNotFoundException ex) {
             Logger.getLogger(RegisterView.class.getName()).log(Level.SEVERE, null, ex);
@@ -100,11 +103,19 @@ public class SeeOwnCars extends javax.swing.JFrame {
                     int columna_point = 2;
                     
                     if(fila_point > -1){
-                        car_update = (String)model.getValueAt(fila_point, columna_point);
-                        EditCarView editarCoche = new EditCarView();
-                        editarCoche.setVisible(true);
-                        
-                        SeeOwnCars.this.dispose();
+                        try {
+                            car_update = (String)model.getValueAt(fila_point, columna_point);
+                            EditCarView editarCoche = new EditCarView();
+                            editarCoche.setVisible(true);
+                            
+                            SeeOwnCars.this.dispose();
+                        } catch (ClassNotFoundException ex) {
+                            System.getLogger(SeeOwnCars.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+                        } catch (SQLException ex) {
+                            System.getLogger(SeeOwnCars.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+                        } catch (IOException ex) {
+                            System.getLogger(SeeOwnCars.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+                        }
                     }
                     
                 }
@@ -231,8 +242,12 @@ public class SeeOwnCars extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton_AddActionPerformed
 
     private void jButton_EditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_EditActionPerformed
-        EditCarView CrearCoche = new EditCarView();
-        CrearCoche.setVisible(true);
+        try {
+            EditCarView CrearCoche = new EditCarView();
+            CrearCoche.setVisible(true);
+        } catch (ClassNotFoundException | SQLException|IOException e) {
+            System.err.println("Error en ExpenseController: " + e.getMessage());
+        }
     }//GEN-LAST:event_jButton_EditActionPerformed
 
     private void jButton_InfoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_InfoActionPerformed

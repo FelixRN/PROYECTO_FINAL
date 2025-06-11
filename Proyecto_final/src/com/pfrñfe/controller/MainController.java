@@ -1,25 +1,20 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.pfrñfe.controller;
 
 import com.pfrñfe.model.AuthModel;
 import com.pfrñfe.model.IAuthModel;
-import com.pfrñfe.model.repository.CarModel;
-import com.pfrñfe.model.repository.ExpenseModel;
-import com.pfrñfe.model.repository.ICarModel;
-import com.pfrñfe.model.repository.IExpenseModel;
-import com.pfrñfe.model.repository.IUserModel;
-import com.pfrñfe.model.repository.UserModel;
+import com.pfrñfe.model.repository.*;
 
-public class MainController implements IMainController{
+import java.io.IOException;
+import java.sql.SQLException;
+
+public class MainController implements IMainController {
+
     private ICarModel carModel;
     private IExpenseModel expenseModel;
-    private IUserModel userModel;       
+    private IUserModel userModel;
     private IAuthModel authModel;
 
-    public MainController() {
+    public MainController() throws ClassNotFoundException, SQLException, IOException {
         this.carModel = new CarModel();
         this.expenseModel = new ExpenseModel();
         this.userModel = new UserModel();
@@ -28,7 +23,6 @@ public class MainController implements IMainController{
 
     @Override
     public void createCar(String marca, String modelo, String matricula, String anno) {
-       carModel.newCar(modelo ,marca, matricula, anno);
+        carModel.newCar(modelo, marca, matricula, anno);
     }
-    
 }

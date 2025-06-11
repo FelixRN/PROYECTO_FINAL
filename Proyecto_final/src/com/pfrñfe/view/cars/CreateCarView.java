@@ -2,13 +2,23 @@ package com.pfrñfe.view.cars;
 
 import com.pfrñfe.controller.IMainController;
 import com.pfrñfe.controller.MainController;
-
+import com.pfrñfe.controller.CarController;
+import com.pfrñfe.model.DatabaseConnection;
 import com.pfrñfe.view.UserView;
+
 import java.awt.Color;
 import java.awt.Image;
 import java.awt.Toolkit;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
 import javax.swing.WindowConstants;
 
 
@@ -17,10 +27,13 @@ public class CreateCarView extends javax.swing.JFrame {
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(CreateCarView.class.getName());
 
     private IMainController mainController;
+    private CarController carController;
+
     private int ID;
    
-    public CreateCarView() {
+    public CreateCarView() throws ClassNotFoundException, SQLException, IOException {
         initComponents();
+        carController = new CarController();
         setSize(650,430);
         setResizable(false);
         setTitle("Crear coche");
@@ -123,42 +136,77 @@ public class CreateCarView extends javax.swing.JFrame {
 
     private void jButton_ApplyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_ApplyActionPerformed
         
-        int permisos_cmb, validacion = 0;
-        String marca, modelo, matricula, anno;
-        
-        marca = txt_marca.getText().trim();
-        modelo = txt_modelo.getText().trim();
-        matricula = txt_matricula.getText().trim();
-        anno = txt_anno.getText().trim();
-       
-        if(marca.equals("")){
-            txt_marca.setBackground(Color.RED);
-            validacion++;
+        int validacion = 0;
+    String marca = txt_marca.getText().trim();
+    String modelo = txt_modelo.getText().trim();
+    String matricula = txt_matricula.getText().trim();
+    String anno = txt_anno.getText().trim();
+
+    // Validación visual
+    if (marca.isEmpty()) {
+        txt_marca.setBackground(Color.RED);
+        validacion++;
+    }
+    if (modelo.isEmpty()) {
+        txt_modelo.setBackground(Color.RED);
+        validacion++;
+    }
+    if (matricula.isEmpty()) {
+        txt_matricula.setBackground(Color.RED);
+        validacion++;
+    }
+    if (anno.isEmpty()) {
+        txt_anno.setBackground(Color.RED);
+        validacion++;
+    }
+
+    if (validacion > 0) {
+        JOptionPane.showMessageDialog(null, "Debes llenar todos los campos.");
+        return;
+    }
+
+    try (Connection cn = DatabaseConnection.getConnection()) {
+        // Verificar si la matrícula ya existe
+        String checkQuery = "SELECT 1 FROM coche WHERE matricula = ?";
+        try (PreparedStatement pstCheck = cn.prepareStatement(checkQuery)) {
+            pstCheck.setString(1, matricula);
+            ResultSet rs = pstCheck.executeQuery();
+
+            if (rs.next()) {
+                txt_matricula.setBackground(Color.RED);
+                JOptionPane.showMessageDialog(null, "La matrícula ya está registrada.");
+                return;
+            }
         }
-        if(modelo.equals("")){
-            txt_modelo.setBackground(Color.RED);
-            validacion++;
-        }
-        if(matricula.equals("")){
-            txt_matricula.setBackground(Color.RED);
-            validacion++;
-        }
-        if(anno.equals("")){
-            txt_anno.setBackground(Color.RED);
-            validacion++;
-        }
-        
-        
-    mainController.createCar(marca, modelo, matricula, anno);
-    
-        Limpiar();
-                            
+
+        // Insertar nuevo coche
+        String insertQuery = "INSERT INTO coche (marca, modelo, matricula, anio) VALUES (?, ?, ?, ?)";
+        try (PreparedStatement pstInsert = cn.prepareStatement(insertQuery)) {
+            pstInsert.setString(1, marca);
+            pstInsert.setString(2, modelo);
+            pstInsert.setString(3, matricula);
+            pstInsert.setInt(4, Integer.parseInt(anno)); // ← conversión segura
+
+            pstInsert.executeUpdate();
+
+            Limpiar();
             txt_marca.setBackground(Color.GREEN);
             txt_modelo.setBackground(Color.GREEN);
             txt_matricula.setBackground(Color.GREEN);
             txt_anno.setBackground(Color.GREEN);
-    
-             this.dispose();
+
+            JOptionPane.showMessageDialog(null, "Registro del coche exitoso.");
+            this.dispose();
+        }
+
+    } catch (NumberFormatException e) {
+        txt_anno.setBackground(Color.RED);
+        JOptionPane.showMessageDialog(null, "El año debe ser un número válido.");
+    } catch (SQLException | IOException | ClassNotFoundException e) {
+        System.err.println("Error en el registro de coche: " + e);
+        JOptionPane.showMessageDialog(null, "ERROR al registrar el coche. Contacta al administrador.");
+    }
+             
     }//GEN-LAST:event_jButton_ApplyActionPerformed
 
     private void jButton_CancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_CancelActionPerformed
@@ -188,7 +236,13 @@ public class CreateCarView extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> new CreateCarView().setVisible(true));
+        java.awt.EventQueue.invokeLater(() -> {
+            try {
+                new CreateCarView().setVisible(true);
+            } catch (ClassNotFoundException | SQLException|IOException e) {
+            System.err.println("Error en ExpenseController: " + e.getMessage());
+        }
+        });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

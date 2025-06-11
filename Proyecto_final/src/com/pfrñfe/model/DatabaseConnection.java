@@ -13,9 +13,9 @@ public class DatabaseConnection {
 	private static Connection connection = null;
 
 	public static Connection getConnection() throws ClassNotFoundException, SQLException, IOException {
-		if (connection != null) {
-			return connection;
-		}
+		if (connection != null && !connection.isClosed()) {
+    return connection;
+}
 		          DatabaseConfigurations dbConfigs = Configurations.getInstance().getDatabaseConfigurations();
 
         // Cargar el driver JDBC de MySQL

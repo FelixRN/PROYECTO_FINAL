@@ -94,6 +94,12 @@ public class Expense {
         this.fechaRegistro = fechaRegistro;
     }
     
+    public void setFecha(String toString) {
+    }
+
+    public String getFecha() {
+        throw new UnsupportedOperationException("Not supported yet."); // 
+    }
     @Override
     public String toString() {
         return "Expense{" +
@@ -107,5 +113,7 @@ public class Expense {
                 ", fechaRegistro=" + fechaRegistro +
                 '}';
     }
+
+    
     
 }

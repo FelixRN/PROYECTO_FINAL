@@ -1,7 +1,7 @@
 package com.pfrñfe.view.cars;
 
 import com.pfrñfe.model.dtos.CarDto;
-import com.pfrñfe.service.CarService;
+import com.pfrñfe.model.repository.CarModel;
 import com.pfrñfe.view.auth.LoginView;
 import java.awt.Color;
 import java.awt.Image;
@@ -20,15 +20,15 @@ import javax.swing.*;
 public class EditCarView extends javax.swing.JFrame {
     
     private static final Logger logger = Logger.getLogger(EditCarView.class.getName());
-    private final CarService carService;
+    private final CarModel carModel;
     private CarDto car;
     private final String user;
     private final String car_update;
 
    
-     public EditCarView() {
+     public EditCarView() throws ClassNotFoundException, SQLException, IOException {
         initComponents();
-        carService = new CarService();
+        carModel = new CarModel();
         user = LoginView.user;
         car_update = SeeOwnCars.car_update;
 
@@ -50,7 +50,11 @@ public class EditCarView extends javax.swing.JFrame {
     }
      
      private void cargarDatosCar() {
-         car = carService.findByModelo(car_update);
+        try {
+            car = carModel.getCarByModelo(car_update);
+        } catch (SQLException | ClassNotFoundException | IOException e) {
+            System.err.println("Error en ExpenseController: " + e.getMessage());
+        }
          if (car != null) {
              txt_marca.setText(car.getMarca());
              txt_modelo.setText(car.getModelo());
@@ -208,7 +212,7 @@ public class EditCarView extends javax.swing.JFrame {
             car.setMatricula(matricula);
             car.setAnio(anio);
 
-            boolean actualizado = carService.updateCar(car);
+            boolean actualizado = carModel.updateCar(car);
             if (actualizado) {
                 JOptionPane.showMessageDialog(this, "Coche actualizado correctamente.");
                 new SeeOwnCars().setVisible(true);
@@ -219,12 +223,14 @@ public class EditCarView extends javax.swing.JFrame {
         } catch (NumberFormatException ex) {
             JOptionPane.showMessageDialog(this, "Año inválido. Debe ser un número.");
             txt_anno.setBackground(Color.red);
-        } catch (SQLException | IOException ex) {
-            logger.log(Level.SEVERE, "Error al actualizar coche", ex);
-            JOptionPane.showMessageDialog(this, "Error al actualizar coche: " + ex.getMessage());
-        } catch (ClassNotFoundException ex) {
+        } catch (ClassNotFoundException e) {
+            System.err.println("Error en ExpenseController: " + e.getMessage());
+        } catch (SQLException ex) {
+            System.getLogger(EditCarView.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        } catch (IOException ex) {
             System.getLogger(EditCarView.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
         }
+          
     }//GEN-LAST:event_jButton_EditCarActionPerformed
 
     private void jButton_CancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_CancelarActionPerformed
@@ -246,7 +252,7 @@ public class EditCarView extends javax.swing.JFrame {
         if (confirm == JOptionPane.YES_OPTION) {
             try {
                 boolean eliminado;
-                eliminado = carService.deleteCar(car.getIdCoche());
+                eliminado = carModel.deleteCar(car.getIdCoche());
                 if (eliminado) {
                     JOptionPane.showMessageDialog(this, "Coche eliminado correctamente.");
                     new SeeOwnCars().setVisible(true);
@@ -277,7 +283,8 @@ String uuidIngresado = JOptionPane.showInputDialog(this,
         }
 
         try {
-            boolean agregado = carService.addOwnerToCar(uuidIngresado.trim(), car.getIdCoche());
+            boolean agregado = carModel.addOwner(car.getId(), uuidIngresado.trim());
+
             if (agregado) {
                 JOptionPane.showMessageDialog(this, "Propietario añadido correctamente.");
                 new SeeOwnCars().setVisible(true);
@@ -287,6 +294,8 @@ String uuidIngresado = JOptionPane.showInputDialog(this,
             }
         } catch (ClassNotFoundException ex) {
             logger.log(Level.SEVERE, "Error al volver a la vista de coches", ex);
+        } catch (SQLException ex) {
+            System.getLogger(EditCarView.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
         }
     }//GEN-LAST:event_jButton_AddOwnerActionPerformed
  private void resetBackground() {

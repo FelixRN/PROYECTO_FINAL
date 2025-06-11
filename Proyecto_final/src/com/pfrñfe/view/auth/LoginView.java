@@ -1,5 +1,4 @@
 package com.pfrñfe.view.auth;
-import com.pfrñfe.model.entities.User;
 
 import com.pfrñfe.model.DatabaseConnection;
 import com.pfrñfe.utils.UsuarioSesion;
@@ -18,7 +17,7 @@ import java.sql.SQLException;
 
 public class LoginView extends javax.swing.JFrame {
     
-   /*Enviar datos entre interfaces*/
+   
     public static String user = "";
     String pass = "";
     
@@ -138,10 +137,11 @@ public class LoginView extends javax.swing.JFrame {
             rs = pst.executeQuery();
             
             if (rs.next()) {
-             /*Agregado*/   int idUsuario = rs.getInt("id_usuario");
-             /*Agregado*/   String nombreUsuario = rs.getString("nombre");
-             /*Agregado*/   UsuarioSesion.setUsuario(idUsuario, nombreUsuario);
-              /*Agregado*/  System.out.println("Login exitoso para: " + nombreUsuario);
+            int idUsuario = rs.getInt("id_usuario");
+            String nombreUsuario = rs.getString("nombre");
+            
+            UsuarioSesion.setUsuario(idUsuario, nombreUsuario);
+             System.out.println("Login exitoso para: " + nombreUsuario);
                 dispose();
                 new UserView().setVisible(true);
             } else {
@@ -197,7 +197,4 @@ public class LoginView extends javax.swing.JFrame {
     private javax.swing.JTextField txt_user;
     // End of variables declaration//GEN-END:variables
 
-    public void run() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
 }

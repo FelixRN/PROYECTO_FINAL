@@ -1,15 +1,14 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Interface.java to edit this template
- */
 package com.pfrñfe.model.repository;
 
-/**
- *
- * @author Yo y tu
- */
-public interface ICarModel {
+import com.pfrñfe.model.dtos.CarDto;
+import java.io.IOException;
+import java.sql.SQLException;
 
-    public void newCar(String modelo, String marca, String matricula, String anno);
-    
+public interface ICarModel {
+    void newCar(String modelo, String marca, String matricula, String anno);
+    CarDto getCarByModelo(String modelo) throws SQLException, IOException, ClassNotFoundException;
+    boolean updateCar(CarDto car) throws SQLException, IOException, ClassNotFoundException;
+    boolean deleteCar(int idCar) throws SQLException, IOException, ClassNotFoundException;
+    boolean addOwner(int idCar, String uuidUsuario) throws SQLException, IOException, ClassNotFoundException;
+    boolean existeModelo(String modelo, int idCar) throws SQLException, IOException, ClassNotFoundException;
 }

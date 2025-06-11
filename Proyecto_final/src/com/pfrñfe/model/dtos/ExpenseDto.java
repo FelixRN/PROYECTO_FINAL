@@ -1,6 +1,7 @@
 package com.pfrñfe.model.dtos;
 
 import java.math.BigDecimal;
+import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -14,7 +15,7 @@ public class ExpenseDto {
     private String descripcion;
     private LocalDateTime fechaRegistro;
 
-    public ExpenseDto() {
+    public ExpenseDto(int aInt, String string, double aDouble, Date date, int aInt1) {
     }
 
     public ExpenseDto(int id, int idCoche, String tipo, int kilometraje, LocalDate fechaGasto, BigDecimal importe, String descripcion, LocalDateTime fechaRegistro) {
@@ -104,5 +105,13 @@ public class ExpenseDto {
                 ", descripcion='" + descripcion + '\'' +
                 ", fechaRegistro=" + fechaRegistro +
                 '}';
+    }
+
+    public double getCantidad() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    public Date getFecha() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }

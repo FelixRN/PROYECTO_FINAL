@@ -1,96 +1,116 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.pfrñfe.model.repository;
 
 import com.pfrñfe.model.DatabaseConnection;
-import com.pfrñfe.utils.UsuarioSesion;
-import com.pfrñfe.view.auth.RegisterView;
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JOptionPane;
+import com.pfrñfe.model.dtos.CarDto;
 
+import java.io.IOException;
+import java.sql.*;
 
 public class CarModel implements ICarModel {
 
+    private Connection connection;
+
+    public CarModel() throws ClassNotFoundException, SQLException, IOException {
+        this.connection = DatabaseConnection.getConnection();
+    }
+
     @Override
     public void newCar(String modelo, String marca, String matricula, String anno) {
-        
-        int validacion = 0;
-        
-        try {
-            Connection cn = DatabaseConnection.getConnection(); 
-                PreparedStatement pst = cn.prepareStatement(
-                    "SELECT matricula FROM coche WHERE matricula = '" + matricula + "'");
-                ResultSet rs = pst.executeQuery();
-                
-                if (rs.next()) {
-                JOptionPane.showMessageDialog(null, "Nombre de usuario no disponible.");
-                
-            } else {
-            
-                    if (validacion == 0) {
-                        try {
-                             Connection cn2 = DatabaseConnection.getConnection(); 
-                             PreparedStatement pst2 = cn2.prepareStatement(
-                               /* "INSERT INTO coche (marca, modelo, matricula, anio) VALUES(?, ?, ?,?)");*/
-                                "INSERT INTO coche (marca, modelo, matricula, anio) VALUES(?, ?, ?, ?)",
-                                     Statement.RETURN_GENERATED_KEYS);
-                             //AGREGADO NUEVO
-                             //OPCIONAL Statement.RETURN_GENERATED_KEYS);
-                             //Insertar valores dentro de la BBDD
-                            pst2.setString(1, marca);
-                            pst2.setString(2, modelo);
-                            pst2.setString(3, matricula);
-                            pst2.setString(4, anno);
-                            
-                            int filasAfectadas = pst2.executeUpdate();
-                            
-                            if(filasAfectadas > 0) {
-                                // Obtener el ID del coche recién creado
-                               ResultSet generatedKeys = pst2.getGeneratedKeys();
-                               if(generatedKeys.next()) {
-                               int idCoche = generatedKeys.getInt(1);
-            
-                               // Insertar la relación de propiedad
-                               PreparedStatement pstPropietario = cn2.prepareStatement(
-                                "INSERT INTO propietario (id_usuario, id_coche) VALUES(?, ?)");
-            
-                               pstPropietario.setInt(1, UsuarioSesion.getIdUsuario()); // ID del usuario logueado
-                               pstPropietario.setInt(2, idCoche);
-            
-                               pstPropietario.executeUpdate();
-                               pstPropietario.close();
-                            }
-                               generatedKeys.close();
-                           }
-                            JOptionPane.showMessageDialog(null, "Registro del coche exitoso.");
-                            
-                        } catch (SQLException e) {
-                            System.err.println("Error en registrar coche" + e);
-                            JOptionPane.showMessageDialog(null, "ERROR al registrar!, Contacta al administrador.");
-                        }
-                    } else {
-                        JOptionPane.showMessageDialog(null, "Debes llenar todos los campos.");  
-                    }
-                    
-            }
+        String query = "INSERT INTO coche (modelo, marca, matricula, anio) VALUES (?, ?, ?, ?)";
+        try (PreparedStatement pst = connection.prepareStatement(query)) {
+            pst.setString(1, modelo);
+            pst.setString(2, marca);
+            pst.setString(3, matricula);
+            pst.setInt(4, Integer.parseInt(anno));
+            pst.executeUpdate();
         } catch (SQLException e) {
-            System.err.println("Error en validar matricula de usuario" + e);
-            JOptionPane.showMessageDialog(null, "ERROR al comparar matricula!, contacte al administrador.");
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(RegisterView.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(RegisterView.class.getName()).log(Level.SEVERE, null, ex);
+            e.printStackTrace();
         }
-       
     }
-    
+
+    @Override
+    public CarDto getCarByModelo(String modelo) throws SQLException, IOException, ClassNotFoundException {
+        CarDto car = null;
+        String query = "SELECT * FROM coche WHERE modelo = ?";
+        try (PreparedStatement pst = connection.prepareStatement(query)) {
+            pst.setString(1, modelo);
+            ResultSet rs = pst.executeQuery();
+
+            if (rs.next()) {
+                car = new CarDto(
+                        rs.getInt("id_coche"),
+                        rs.getString("marca"),
+                        rs.getString("modelo"),
+                        rs.getString("matricula"),
+                        rs.getInt("anio")
+                );
+            }
+        }
+        return car;
+    }
+
+    @Override
+    public boolean updateCar(CarDto car) throws SQLException, IOException, ClassNotFoundException {
+        String query = "UPDATE coche SET marca=?, modelo=?, matricula=?, anio=? WHERE id_coche=?";
+        try (PreparedStatement pst = connection.prepareStatement(query)) {
+            pst.setString(1, car.getMarca());
+            pst.setString(2, car.getModelo());
+            pst.setString(3, car.getMatricula());
+            pst.setInt(4, car.getAnio());
+            pst.setInt(5, car.getId());
+            pst.executeUpdate();
+        }
+        return true;
+    }
+
+    @Override
+    public boolean deleteCar(int idCar) throws SQLException, IOException, ClassNotFoundException {
+        String query = "DELETE FROM coche WHERE id_coche=?";
+        try (PreparedStatement pst = connection.prepareStatement(query)) {
+            pst.setInt(1, idCar);
+            pst.executeUpdate();
+        }
+        return true;
+    }
+
+    @Override
+    public boolean addOwner(int idCar, String uuidUsuario) throws SQLException {
+    String query1 = "SELECT id_usuario FROM usuario WHERE codigo_uuid = ?";
+    String query2 = "INSERT INTO propietario (id_usuario, id_coche) VALUES (?, ?)";
+
+    int idUsuario = -1;
+    try (PreparedStatement pst1 = connection.prepareStatement(query1)) {
+        pst1.setString(1, uuidUsuario);
+        ResultSet rs = pst1.executeQuery();
+        if (rs.next()) {
+            idUsuario = rs.getInt("id_usuario");
+        } else {
+            return false;
+        }
+    }
+
+    try (PreparedStatement pst2 = connection.prepareStatement(query2)) {
+        pst2.setInt(1, idUsuario);
+        pst2.setInt(2, idCar);
+        pst2.executeUpdate();
+        return true;
+    } catch (SQLIntegrityConstraintViolationException e) {
+        // Ya existe relación (por clave primaria compuesta), o alguna FK inválida
+        return false;
+    } catch (SQLException e) {
+        e.printStackTrace(); // Log opcional
+        return false;
+    }
+}
+
+    @Override
+    public boolean existeModelo(String modelo, int idCar) throws SQLException, IOException, ClassNotFoundException {
+        String query = "SELECT 1 FROM coche WHERE modelo = ? AND id_coche != ?";
+        try (PreparedStatement pst = connection.prepareStatement(query)) {
+            pst.setString(1, modelo);
+            pst.setInt(2, idCar);
+            ResultSet rs = pst.executeQuery();
+            return rs.next();
+        }
+    }
 }
