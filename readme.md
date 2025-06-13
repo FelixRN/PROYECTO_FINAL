@@ -4,14 +4,22 @@ Este proyecto fue desarrollado originalmente en NetBeans y puede ser ejecutado t
 
 ## Requisitos Previos
 
+<<<<<<< HEAD
 - [**JDK 24**](https://jdk.java.net/24/) (última versión) 
+=======
+- [**JDK 24**](https://jdk.java.net/24/) (última versión)
+>>>>>>> e9d454d74519e65603dbc62fb808c4b460a170f8
 - **NetBeans** o **Eclipse IDE**
 - Conexión a internet para descargar dependencias
 
 ## Dependencias del Proyecto
 
 El proyecto utiliza las siguientes librerías:
+<<<<<<< HEAD
 - [`AbsoluteLayout.jar`](https://mvnrepository.com/artifact/org.netbeans.external/AbsoluteLayout/RELEASE260) - Para el diseño de interfaz
+=======
+- [`AbsoluteLayout.jar`](https://mvnrepository.com/artifact/org.netbeans.external/AbsoluteLayout/RELEASE802) - Para el diseño de interfaz
+>>>>>>> e9d454d74519e65603dbc62fb808c4b460a170f8
 - [`mysql-connector-j-9.3.0.jar`](https://mvnrepository.com/artifact/com.mysql/mysql-connector-j/9.3.0) - Conector MySQL para Java
 
 ## Configuración de Variables de Entorno
