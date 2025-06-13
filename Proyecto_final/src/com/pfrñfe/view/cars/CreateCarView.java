@@ -214,10 +214,9 @@ public class CreateCarView extends javax.swing.JFrame {
        vistaUsuario.setVisible(true);
     }//GEN-LAST:event_jButton_CancelActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
+    
     public static void main(String args[]) {
+<<<<<<< HEAD
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -243,6 +242,10 @@ public class CreateCarView extends javax.swing.JFrame {
             System.err.println("Error en ExpenseController: " + e.getMessage());
         }
         });
+=======
+        
+        java.awt.EventQueue.invokeLater(() -> new CreateCarView().setVisible(true));
+>>>>>>> af2cde03a3076dcffa684474f367a58bf1b9dd60
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
