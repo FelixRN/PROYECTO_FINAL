@@ -235,8 +235,8 @@ public class InfoView extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void txtKmMinActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtKmMinActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtKmMinActionPerformed
+        
+    }
 
     private void jButton_filtrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_filtrarActionPerformed
 

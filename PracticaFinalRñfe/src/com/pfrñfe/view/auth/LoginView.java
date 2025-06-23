@@ -14,7 +14,6 @@ import javax.swing.JOptionPane;
 import java.sql.SQLException;
 
 
-
 public class LoginView extends javax.swing.JFrame {
     
    
@@ -187,7 +186,7 @@ public class LoginView extends javax.swing.JFrame {
 
     public static void main(String args[]) {
         
-        java.awt.EventQueue.invokeLater(() -> new LoginView().setVisible(true));
+        
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

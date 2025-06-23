@@ -42,10 +42,9 @@ CREATE TABLE gastos (
 INSERT INTO usuario (nombre, password ) VALUES('Felix', '12345');
 INSERT INTO coche (marca, modelo, matricula, anio ) VALUES('Volvo', 'CMD', 'DRD-123', '1999');
 
+SELECT * FROM propietario WHERE id_usuario = 5;
 
-<<<<<<< HEAD
-SELECT * FROM usuario;
-=======
 SELECT * FROM usuario;
 SELECT * FROM coche;
->>>>>>> e9d454d74519e65603dbc62fb808c4b460a170f8
+SELECT * FROM gastos WHERE id_coche = 9;
+SHOW COLUMNS FROM gastos WHERE id_coche = 9;

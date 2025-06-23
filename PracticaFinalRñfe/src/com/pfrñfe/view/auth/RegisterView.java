@@ -1,12 +1,7 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package com.pfrñfe.view.auth;
 
-
-
 import com.pfrñfe.model.DatabaseConnection;
+import com.pfrñfe.view.UserView;
 
 import java.awt.Color;
 import java.awt.Image;
@@ -26,11 +21,10 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- *
- * @author practicas1
- */
+
 public class RegisterView extends javax.swing.JFrame {
+    
+    private IUserController userController;
     
     String user;
     
@@ -68,7 +62,7 @@ public class RegisterView extends javax.swing.JFrame {
 
         txt_registerNew = new javax.swing.JTextField();
         txt_passwordNew = new javax.swing.JPasswordField();
-        jButton_Registrarse = new javax.swing.JButton();
+        jButton_Register = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel_Wallpaper = new javax.swing.JLabel();
@@ -92,15 +86,15 @@ public class RegisterView extends javax.swing.JFrame {
         });
         getContentPane().add(txt_passwordNew, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 260, 210, 30));
 
-        jButton_Registrarse.setBackground(new java.awt.Color(153, 255, 153));
-        jButton_Registrarse.setText("REGISTRARSE");
-        jButton_Registrarse.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        jButton_Registrarse.addActionListener(new java.awt.event.ActionListener() {
+        jButton_Register.setBackground(new java.awt.Color(153, 255, 153));
+        jButton_Register.setText("REGISTRARSE");
+        jButton_Register.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        jButton_Register.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton_RegistrarseActionPerformed(evt);
+                jButton_RegisterActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton_Registrarse, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 380, 170, 50));
+        getContentPane().add(jButton_Register, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 380, 170, 50));
 
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("Ingrese una contraseña:");
@@ -118,7 +112,7 @@ public class RegisterView extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_txt_passwordNewActionPerformed
 
-    private void jButton_RegistrarseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_RegistrarseActionPerformed
+    private void jButton_RegisterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_RegisterActionPerformed
         int permisos_cmb, validacion = 0;
         String nombre, pass, id_coche;
         
@@ -135,72 +129,20 @@ public class RegisterView extends javax.swing.JFrame {
             validacion++;
         }
         
+        userController.register();
         
-        try {
-            Connection cn = DatabaseConnection.getConnection(); 
-                PreparedStatement pst = cn.prepareStatement(
-                    "SELECT nombre FROM usuario WHERE nombre = '" + nombre + "'");
-                ResultSet rs = pst.executeQuery();
-                
-                if (rs.next()) {
-                txt_registerNew.setBackground(Color.RED);
-                    JOptionPane.showMessageDialog(null, "Nombre de usuario no disponible.");
-                    return;/*cn.close();*/
-            } else {
-                    
-            //cn.close();
-            
-                    if (validacion == 0) {
-                        try {
-                             Connection cn2 = DatabaseConnection.getConnection(); 
-                             PreparedStatement pst2 = cn2.prepareStatement(
-                                "insert into usuario (nombre,password)values (?,?)");
-                             //Insertar valores dentro de la BBDD
-                            pst2.setString(1, nombre);
-                            pst2.setString(2, pass);
-                            
-                            pst2.executeUpdate();
-                           // cn2.close();
-                            
-                            Limpiar();
-                            
-                            txt_registerNew.setBackground(Color.GREEN);
-                            txt_passwordNew.setBackground(Color.GREEN);
-                            
-                            JOptionPane.showMessageDialog(null, "Registro exitoso.");
-                            this.dispose();
-                            
-                        } catch (SQLException e) {
-                            System.err.println("Error en registrar usuario" + e);
-                            JOptionPane.showMessageDialog(null, "ERROR al registrar!, Contacta al administrador.");
-                        }
-                    } else {
-                        JOptionPane.showMessageDialog(null, "Debes llenar todos los campos.");
+        dispose();
+        
+    }//GEN-LAST:event_jButton_RegisterActionPerformed
 
-                        
-                    }
-                    
-            }
-        } catch (SQLException e) {
-            System.err.println("Error en validar nombre de usuario" + e);
-            JOptionPane.showMessageDialog(null, "ERROR al comparar usuario!, contacte al administrador.");
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(RegisterView.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(RegisterView.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }//GEN-LAST:event_jButton_RegistrarseActionPerformed
-
-    /**
-     * @param args the command line arguments
-     */
+    
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
          */
-        try {
+       /* try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
@@ -215,7 +157,7 @@ public class RegisterView extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(RegisterView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(RegisterView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
+        }*/
         //</editor-fold>
 
         /* Create and display the form */
@@ -227,7 +169,7 @@ public class RegisterView extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton_Registrarse;
+    private javax.swing.JButton jButton_Register;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel_Wallpaper;
@@ -235,8 +177,4 @@ public class RegisterView extends javax.swing.JFrame {
     private javax.swing.JTextField txt_registerNew;
     // End of variables declaration//GEN-END:variables
 
-    public void Limpiar(){
-        txt_registerNew.setText("");
-        txt_passwordNew.setText("");
-    }
 }

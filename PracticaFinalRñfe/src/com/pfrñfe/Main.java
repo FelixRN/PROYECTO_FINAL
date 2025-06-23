@@ -1,7 +1,6 @@
-
 package com.pfrñfe;
-import com.pfrñfe.view.auth.LoginView;
 
+import com.pfrñfe.view.auth.LoginView;
 
 public class Main {
     public static void main(String args[]){
