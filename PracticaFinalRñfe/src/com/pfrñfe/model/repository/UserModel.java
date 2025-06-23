@@ -1,43 +1,70 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package com.pfrñfe.model.repository;
 
+import com.pfrñfe.view.auth.LoginView;
 import com.pfrñfe.model.DatabaseConnection;
-
+import com.pfrñfe.view.auth.RegisterView;
 import java.io.IOException;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import javax.swing.JOptionPane;
 
-public class UserModel implements IUserModel {
-
-    private Connection connection;
-
-    public UserModel() throws ClassNotFoundException, SQLException, IOException {
-        this.connection = DatabaseConnection.getConnection();
-    }
-
-    @Override
-    public String findUserName(String userName) throws SQLException {
-        String nombreUsuario = null;
-        String query = "SELECT nombre FROM usuario WHERE nombre = ?";
-        try (PreparedStatement pst = connection.prepareStatement(query)) {
-            pst.setString(1, userName);
-            ResultSet rs = pst.executeQuery();
-            if (rs.next()) {
-                nombreUsuario = rs.getString("nombre");
-            }
-        }
-        return nombreUsuario;
-    }
+public class UserModel implements IUserModel{
+    public int validacion =0;
+    public String user ="", car_update ="";
+    public int ID = 0;
+    
 
     @Override
-    public String obtenerNombreUsuario(String user) throws SQLException, IOException, ClassNotFoundException {
-        String nombreUsuario = null;
-        String query = "SELECT nombre FROM usuario WHERE nombre = ?";
-        try (PreparedStatement pst = connection.prepareStatement(query)) {
-            pst.setString(1, user);
-            ResultSet rs = pst.executeQuery();
-            if (rs.next()) {
-                nombreUsuario = rs.getString("nombre");
+    public void register(String nombre, String password){
+        try {
+            Connection cn = DatabaseConnection.getConnection(); 
+                PreparedStatement pst = cn.prepareStatement(
+                    "SELECT nombre FROM usuario WHERE nombre = '" + nombre + "'");
+                ResultSet rs = pst.executeQuery();
+                
+                if (rs.next()) {
+                    JOptionPane.showMessageDialog(null, "Nombre de usuario no disponible.");
+                /*cn.close();*/            
+                } else {
+            //cn.close();
+                    if (validacion == 0) {
+                        try {
+                             Connection cn2 = DatabaseConnection.getConnection(); 
+                             PreparedStatement pst2 = cn2.prepareStatement(
+                                "insert into usuario (nombre,password)values (?,?)");
+                            pst2.setString(1, nombre);
+                            pst2.setString(2, password);
+                            
+                            pst2.executeUpdate();
+                           // cn2.close();                        
+                            
+                            JOptionPane.showMessageDialog(null, "Registro exitoso.");
+                            
+                            
+                        } catch (SQLException e) {
+                            System.err.println("Error en registrar usuario" + e);
+                            JOptionPane.showMessageDialog(null, "ERROR al registrar!, Contacta al administrador.");
+                        }
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Debes llenar todos los campos.");
+                        
+                    }
+                    
             }
+        } catch (ClassNotFoundException | SQLException|IOException e) {
+            System.err.println("Error en ExpenseController: " + e.getMessage());
         }
-        return nombreUsuario;
+        
     }
+    
+    
+    
+    
 }

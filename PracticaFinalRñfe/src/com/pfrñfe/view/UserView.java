@@ -1,17 +1,11 @@
 package com.pfrñfe.view;
 
-import com.pfrñfe.controller.IUserController;
-import com.pfrñfe.controller.UserController;
-import com.pfrñfe.view.cars.SeeOwnCars;
-import com.pfrñfe.view.cars.CreateCarView;
-import com.pfrñfe.model.repository.IUserModel;
-import com.pfrñfe.model.repository.UserModel;
-
 import java.sql.*;
-
-import com.pfrñfe.model.repository.UserModel;
+import com.pfrñfe.model.DatabaseConnection;
 import com.pfrñfe.view.auth.LoginView;
-
+import java.awt.Container;
+import org.netbeans.lib.awtextra.AbsoluteConstraints;
+import org.netbeans.lib.awtextra.AbsoluteLayout;
 import java.awt.Image;
 import java.awt.Toolkit;
 import javax.swing.Icon;
@@ -20,26 +14,17 @@ import javax.swing.WindowConstants;
 import javax.swing.JOptionPane;
 import java.io.IOException;
 
-
 public class UserView extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(UserView.class.getName());
 
     String user;
     /*public static int sesion_usuario;*/
-    private IUserController userController;
     
     public UserView() {
         initComponents();
         user = LoginView.user;
       /*  sesion_usuario = 1;*/
-      
-      try {
-            this.userController = new UserController();
-        } catch (ClassNotFoundException | SQLException | IOException e) {
-            logger.severe("Error al inicializar UserController: " + e.getMessage());
-            JOptionPane.showMessageDialog(this, "Error interno: " + e.getMessage());
-        }
         
         setSize(650, 430);
         setResizable(false);
@@ -49,52 +34,106 @@ public class UserView extends javax.swing.JFrame {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         // Cargar datos del usuario
         cargarDatosUsuario();
-               
+         
+        ImageIcon back = new ImageIcon("src/images/Back.png");
+        Icon icono2 = new ImageIcon(back.getImage().getScaledInstance(jButton_Back.getWidth(),
+            jButton_Back.getHeight(), Image.SCALE_DEFAULT));
+            jButton_Back.setIcon(icono2);
+            this.repaint();
+            
         ImageIcon wallpaper = new ImageIcon("src/images/Wallpaper.jpg");
         Icon icono = new ImageIcon(wallpaper.getImage().getScaledInstance(jLabel_Wallpaper.getWidth(),
             jLabel_Wallpaper.getHeight(), Image.SCALE_DEFAULT));
             jLabel_Wallpaper.setIcon(icono);
             this.repaint();
-            
-        ImageIcon icon = new ImageIcon(getClass().getResource("/images/Back.png"));
-        Image img = icon.getImage().getScaledInstance(jButton_Back2.getWidth(), jButton_Back2.getHeight(), Image.SCALE_SMOOTH);
-            jButton_Back2.setIcon(new ImageIcon(img));    
-            
-         }   
+         } 
     
         @Override
         public Image getIconImage(){
         Image retValue = Toolkit.getDefaultToolkit().getImage(ClassLoader.getSystemResource("images/icon_of.png"));
-        return retValue;  
+        return retValue;
+            
         } 
     
-
+    
 private void cargarDatosUsuario() {
-    System.out.println("Usuario a buscar: '" + user + "'");
+    
+        System.out.println("Usuario a buscar: '" + user + "'");
+    
+        Connection cn = null;
+        PreparedStatement pst = null;
+        ResultSet rs = null;
+        
+        try {
+            cn = DatabaseConnection.getConnection();
+            
+            pst = cn.prepareStatement("SELECT nombre FROM usuario WHERE  nombre = ?");
+            pst.setString(1,user);
+            
+            rs = pst.executeQuery();
+            
+            if (rs.next()) {
+                String nombreUsuario = rs.getString("nombre");
+             /*   String codigoUuid = rs.getString("codigo_uuid");*/
+                
+                jLabel_NombreUsuario.setText("Bienvenido: " + nombreUsuario);
 
-        String nombreUsuario = userController.findUserName(user);
-        if (nombreUsuario != null) {
-            jLabel_NombreUsuario.setText("Bienvenido: " + nombreUsuario);
-        } else {
-            jLabel_NombreUsuario.setText("Usuario no encontrado");
-            logger.warning("No se encontró el usuario: " + user);
-            mostrarErrorUsuarioNoEncontrado();
+                /*setUserUuid(codigoUuid);
+                logger.info("Usuario cargado correctamente: " + nombreUsuario);*/
+            } else {
+                jLabel_NombreUsuario.setText("Usuario no encontrado");
+                logger.warning("No se encontró el usuario: " + user);
+
+                 mostrarErrorUsuarioNoEncontrado();
+            }
+            
+        } catch (SQLException e) {
+            logger.severe("Error SQL al cargar datos del usuario: " + e.getMessage());
+            JOptionPane.showMessageDialog(this, 
+                "Error al conectar con la base de datos: " + e.getMessage(), 
+                "Error de Conexión", 
+                JOptionPane.ERROR_MESSAGE);
+            jLabel_NombreUsuario.setText("Error al cargar usuario");
+        } catch (ClassNotFoundException e) {
+            logger.severe("Driver de base de datos no encontrado: " + e.getMessage());
+            JOptionPane.showMessageDialog(this, 
+                "Driver de base de datos no encontrado", 
+                "Error de Configuración", 
+                JOptionPane.ERROR_MESSAGE);
+        } catch (IOException e) {
+            logger.severe("Error al leer configuración: " + e.getMessage());
+            JOptionPane.showMessageDialog(this, 
+                "Error al leer archivo de configuración: " + e.getMessage(), 
+                "Error de Configuración", 
+                JOptionPane.ERROR_MESSAGE);
+        } finally {
+            cerrarRecursos(rs, pst, cn);
+        }
+    }
+    private void cerrarRecursos(ResultSet rs, PreparedStatement pst, Connection cn) {
+        try {
+            if (rs != null) rs.close();
+            if (pst != null) pst.close();
+            // No cerrar la conexión principal si es singleton
+            // if (cn != null) cn.close();
+        } catch (SQLException e) {
+            logger.warning("Error al cerrar recursos: " + e.getMessage());
         }
     }
 
-    private void mostrarErrorUsuarioNoEncontrado() {
+    private void mostrarErrorUsuarioNoEncontrado() throws ClassNotFoundException, SQLException, IOException {
         int opcion = JOptionPane.showConfirmDialog(this,
-                "El usuario no fue encontrado en la base de datos.\n¿Desea volver al login?",
-                "Usuario no encontrado",
-                JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE);
-
+            "El usuario no fue encontrado en la base de datos.\n¿Desea volver al login?",
+            "Usuario no encontrado",
+            JOptionPane.YES_NO_OPTION,
+            JOptionPane.QUESTION_MESSAGE);
+            
         if (opcion == JOptionPane.YES_OPTION) {
             volverAlLogin();
         }
     }
 
-    private void volverAlLogin() {
+    private void volverAlLogin() throws ClassNotFoundException, SQLException, IOException {
         this.dispose();
         new LoginView().setVisible(true);
     }
@@ -120,7 +159,7 @@ private void cargarDatosUsuario() {
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        jButton_Back2 = new javax.swing.JButton();
+        jButton_Back = new javax.swing.JButton();
         jLabel_Wallpaper = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -157,31 +196,35 @@ private void cargarDatosUsuario() {
         jLabel3.setText("Creado por Don Felix");
         getContentPane().add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 360, -1, -1));
 
-        jButton_Back2.addActionListener(new java.awt.event.ActionListener() {
+        jButton_Back.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton_Back2ActionPerformed(evt);
+                jButton_BackActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton_Back2, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 320, 70, 60));
+        getContentPane().add(jButton_Back, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 320, 80, 50));
         getContentPane().add(jLabel_Wallpaper, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 650, 430));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton_VerCochesPropiosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_VerCochesPropiosActionPerformed
+        SeeOwnCars CochesPropios;
         try {
-            SeeOwnCars CochesPropios = new SeeOwnCars();
+            CochesPropios = new SeeOwnCars();
             CochesPropios.setVisible(true);
         } catch (ClassNotFoundException ex) {
-            System.getLogger(UserView.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+            JOptionPane.showMessageDialog(this,
+                    "Error al cargar la ventana " + ex.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
+            System.err.println("Error al instaciar SeeOwnCars: " + ex);
         }
     }//GEN-LAST:event_jButton_VerCochesPropiosActionPerformed
 
     private void jButton_CrearCocheActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_CrearCocheActionPerformed
-
+        /*Indicar a donde ir después de darle al boton*/
+        CreateCarView CrearCoche = null;
         try {
-            CreateCarView CrearCoche = new CreateCarView();
-            CrearCoche.setVisible(true);
+            CrearCoche = new CreateCarView();
         } catch (ClassNotFoundException ex) {
             System.getLogger(UserView.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
         } catch (SQLException ex) {
@@ -189,13 +232,22 @@ private void cargarDatosUsuario() {
         } catch (IOException ex) {
             System.getLogger(UserView.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
         }
+        CrearCoche.setVisible(true);
     }//GEN-LAST:event_jButton_CrearCocheActionPerformed
 
-    private void jButton_Back2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_Back2ActionPerformed
-        LoginView volver = new LoginView();
-        volver.setVisible(true);
-        UserView.this.dispose();
-    }//GEN-LAST:event_jButton_Back2ActionPerformed
+    private void jButton_BackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_BackActionPerformed
+        try {
+            this.dispose();
+            LoginView volverLogin = new LoginView();
+            volverLogin.setVisible(true);
+        } catch (ClassNotFoundException ex) {
+            System.getLogger(UserView.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        } catch (SQLException ex) {
+            System.getLogger(UserView.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        } catch (IOException ex) {
+            System.getLogger(UserView.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        }
+    }//GEN-LAST:event_jButton_BackActionPerformed
 
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(() -> new UserView().setVisible(true));
@@ -205,8 +257,6 @@ private void cargarDatosUsuario() {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton_Back;
-    private javax.swing.JButton jButton_Back1;
-    private javax.swing.JButton jButton_Back2;
     private javax.swing.JButton jButton_CrearCoche;
     private javax.swing.JButton jButton_VerCochesPropios;
     private javax.swing.JLabel jLabel1;

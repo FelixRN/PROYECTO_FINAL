@@ -17,6 +17,10 @@ public class ExpenseDto {
 
     public ExpenseDto(int aInt, String string, double aDouble, Date date, int aInt1) {
     }
+    
+    public ExpenseDto() {
+        this.fechaRegistro = LocalDateTime.now();
+    }
 
     public ExpenseDto(int id, int idCoche, String tipo, int kilometraje, LocalDate fechaGasto, BigDecimal importe, String descripcion, LocalDateTime fechaRegistro) {
         this.id = id;

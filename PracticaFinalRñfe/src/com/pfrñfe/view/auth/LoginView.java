@@ -1,10 +1,17 @@
 package com.pfrñfe.view.auth;
 
+
+import com.pfrñfe.controller.AuthController;
+import com.pfrñfe.controller.IAuthController;
+
+import com.pfrñfe.controller.AuthController;
 import com.pfrñfe.model.DatabaseConnection;
-import com.pfrñfe.utils.UsuarioSesion;
+import com.pfrñfe.model.dtos.UserLoginDto;
+import com.pfrñfe.model.entities.UsuarioSesion;
 import com.pfrñfe.view.UserView;
 import java.awt.Image;
 import java.awt.Toolkit;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -13,18 +20,28 @@ import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import java.sql.SQLException;
 
-
 public class LoginView extends javax.swing.JFrame {
     
-   
+   /*Enviar datos entre interfaces*/
     public static String user = "";
     String pass = "";
+    private IAuthController auth;
+    
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(LoginView.class.getName());
 
  
-    public LoginView() {
+    public LoginView() throws ClassNotFoundException, SQLException, IOException {
+        
+        /*this.auth = new AuthController();*/
         initComponents();
+        
+        try {
+        auth = new AuthController();
+        } catch (Exception e) {
+        JOptionPane.showMessageDialog(this, "Error al iniciar controlador de autenticación: " + e.getMessage());
+        e.printStackTrace();
+        }
         setSize(400,550);
         setResizable(false);
         setTitle("Acceso al sistema");
@@ -43,11 +60,12 @@ public class LoginView extends javax.swing.JFrame {
         this.repaint();
         }
 
-        @Override
+       @Override
         public Image getIconImage(){
-        Image retValue = Toolkit.getDefaultToolkit().getImage(ClassLoader.getSystemResource("images/icon_of.png"));
-        return retValue;
+            Image retValue = Toolkit.getDefaultToolkit().getImage(ClassLoader.getSystemResource("images/icon_of.png"));
+            return retValue;
         }
+        
         
     
     @SuppressWarnings("unchecked")
@@ -114,36 +132,77 @@ public class LoginView extends javax.swing.JFrame {
     private void jButton_AccederActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_AccederActionPerformed
         
         user = txt_user.getText().trim();
-        pass = txt_password.getText().trim();
+        pass = new String(txt_password.getPassword()).trim(); // ✅ seguro y moderno
+
+        //pass = txt_password.getText().trim();
         
+        if (!user.equals("") && !pass.equals("")) {
+        UserLoginDto userL = new UserLoginDto(user, pass);
+
+        System.out.println("Intentando login con usuario: " + user);
+        System.out.println("Password ingresada (en texto plano): " + pass);
+
+        if (auth.login(userL)) {
+            JOptionPane.showMessageDialog(this, "¡Login correcto!");
+
+            // Recupera ID si lo necesitas
+            try {
+                Connection cn = DatabaseConnection.getConnection();
+                PreparedStatement pst = cn.prepareStatement("SELECT id_usuario FROM usuario WHERE nombre = ?");
+                pst.setString(1, user);
+                ResultSet rs = pst.executeQuery();
+
+                if (rs.next()) {
+                    int idUsuario = rs.getInt("id_usuario");
+                    UsuarioSesion.setUsuario(idUsuario, user); // Configura la sesión
+                    dispose();
+                    new UserView().setVisible(true);
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Error al obtener datos del usuario.");
+            }
+
+        } else {
+            JOptionPane.showMessageDialog(this, "Credenciales incorrectas.");
+            txt_user.setText("");
+            txt_password.setText("");
+        }
+    } else {
+        JOptionPane.showMessageDialog(this, "Debes llenar todos los campos.");
+    }
+        
+        /*
         System.out.println("Usuario ingresado: '" + user + "'");
         System.out.println("Password ingresado: '" + pass + "'");
         
-        if (!user.equals("") && !pass.equals("")) {
-           
+        UserLoginDto userL = new UserLoginDto(user, pass);
+        
+        if(auth.login(userL)){
+            
+        }*/
+        
+        /*if (!user.equals("") && !pass.equals("")) {
+            
             Connection cn = null; 
             PreparedStatement pst = null;
             ResultSet rs = null;
-            //Hasta aqui
+            
             try {
                 cn = DatabaseConnection.getConnection(); 
-                //???
-                String query = "SELECT id_usuario, nombre FROM usuario WHERE nombre = ? AND password = ?";
-                pst = cn.prepareStatement(query);
-                /*pst = cn.prepareStatement(//CAMBIAMOS EL NOMBRE POR ID_USUARIO
+                pst = cn.prepareStatement(
                     "SELECT id_usuario, nombre FROM usuario "
-                            + "WHERE nombre = ? AND password = ?");*/
-                
+                            + "WHERE nombre = ? AND password = ?");
             pst.setString(1, user);
             pst.setString(2, pass);
             rs = pst.executeQuery();
             
             if (rs.next()) {
-            int idUsuario = rs.getInt("id_usuario");
-            String nombreUsuario = rs.getString("nombre");
-            
-            UsuarioSesion.setUsuario(idUsuario, nombreUsuario);
-             System.out.println("Login exitoso para: " + nombreUsuario);
+                int idUsuario = rs.getInt("id_usuario");
+                String nombreUsuario = rs.getString("nombre");
+                UsuarioSesion.setUsuario(idUsuario, nombreUsuario);
+                System.out.println("Login exitoso para: " + nombreUsuario);
                 dispose();
                 new UserView().setVisible(true);
             } else {
@@ -157,18 +216,17 @@ public class LoginView extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Error al iniciar sesión!");
         }//Código agregado ->
             finally {
-            // Asegúrate de cerrar los recursos en el bloque finally
             try {
                 if (rs != null) rs.close();
                 if (pst != null) pst.close();
             } catch (SQLException ex) {
                 System.err.println("Error al cerrar recursos: " + ex);
             }
-        }/*Hasta aqui*/
+        }
 
     } else {
         JOptionPane.showMessageDialog(null, "Debes llenar todos los campos");
-    }
+    }*/
         
     }//GEN-LAST:event_jButton_AccederActionPerformed
 
@@ -181,12 +239,22 @@ public class LoginView extends javax.swing.JFrame {
         /*Indicar a donde ir después de darle al boton*/
         RegisterView registrarUsuario = new RegisterView();
         registrarUsuario.setVisible(true);
-        
     }//GEN-LAST:event_jButton_RegistrarseActionPerformed
-
-    public static void main(String args[]) {
+public static void main(String args[]) {
         
-        
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                try {
+                    new LoginView().setVisible(true);
+                } catch (ClassNotFoundException ex) {
+                    System.getLogger(LoginView.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+                } catch (SQLException ex) {
+                    System.getLogger(LoginView.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+                } catch (IOException ex) {
+                    System.getLogger(LoginView.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+                }
+            }
+        });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -198,5 +266,4 @@ public class LoginView extends javax.swing.JFrame {
     private javax.swing.JPasswordField txt_password;
     private javax.swing.JTextField txt_user;
     // End of variables declaration//GEN-END:variables
-
 }
