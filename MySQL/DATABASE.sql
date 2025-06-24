@@ -38,13 +38,9 @@ CREATE TABLE gastos (
     fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (id_coche) REFERENCES coche(id_coche) ON DELETE CASCADE
 );
-
-INSERT INTO usuario (nombre, password ) VALUES('Felix', '12345');
-INSERT INTO coche (marca, modelo, matricula, anio ) VALUES('Volvo', 'CMD', 'DRD-123', '1999');
-
+/*
 SELECT * FROM propietario WHERE id_usuario = 5;
-
 SELECT * FROM usuario;
 SELECT * FROM coche;
 SELECT * FROM gastos WHERE id_coche = 9;
-SHOW COLUMNS FROM gastos WHERE id_coche = 9;
+SHOW COLUMNS FROM gastos WHERE id_coche = 9;*/

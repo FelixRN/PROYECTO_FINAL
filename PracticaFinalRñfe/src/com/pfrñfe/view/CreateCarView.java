@@ -172,13 +172,10 @@ public class CreateCarView extends javax.swing.JFrame {
 
     private void jButton_CancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_CancelActionPerformed
        this.dispose();
-        /*UserView vistaUsuario = new UserView();
-       vistaUsuario.setVisible(true);*/
+      
     }//GEN-LAST:event_jButton_CancelActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
+    
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">

@@ -82,13 +82,10 @@ public class ExpenseView extends javax.swing.JFrame {
                  break;
                  }
                     }
-                
-                 // Guarda id_gasto si luego quieres editar
-                //idGastoActual = rs.getInt("id_gastos");
                 idGastoActual = -1;
                 modoEdicion = false;
             } else {
-                // No hay gastos previos, será modo creación
+                
                 modoEdicion = false;
         }
                 
@@ -310,9 +307,6 @@ System.out.println("Insertando gasto: tipo=" + tipo + ", coche=" + idCoche);
         
     }//GEN-LAST:event_jButton_CancelActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">

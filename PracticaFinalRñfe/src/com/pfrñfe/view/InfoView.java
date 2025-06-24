@@ -16,10 +16,7 @@ import javax.swing.JOptionPane;
 import javax.swing.WindowConstants;
 import javax.swing.table.DefaultTableModel;
 
-/**
- *
- * @author practicas1
- */
+
 public class InfoView extends javax.swing.JFrame {
 
     private int idCoche;
@@ -56,7 +53,6 @@ public class InfoView extends javax.swing.JFrame {
         List<Object> params = new ArrayList<>();
         params.add(idCoche);
 
-        // Filtro por Año
         if (txtAnio.isSelected()) {
             String anioStr = JOptionPane.showInputDialog(this, "Introduce el año (formato: yyyy):");
             if (anioStr != null && anioStr.matches("\\d{4}")) {
@@ -68,7 +64,6 @@ public class InfoView extends javax.swing.JFrame {
             }
         }
 
-        // Filtro por Fecha completa
         if (txtFecha.isSelected()) {
             String fechaStr = JOptionPane.showInputDialog(this, "Introduce la fecha exacta (formato: yyyy-MM-dd):");
             if (fechaStr != null && fechaStr.matches("\\d{4}-\\d{2}-\\d{2}")) {
@@ -80,7 +75,6 @@ public class InfoView extends javax.swing.JFrame {
             }
         }
 
-        // Filtro por km mínimo
         if (txtKmMin.isSelected()) {
             String kmMinStr = JOptionPane.showInputDialog(this, "Introduce el kilometraje mínimo:");
             if (kmMinStr != null && kmMinStr.matches("\\d+")) {
@@ -92,7 +86,6 @@ public class InfoView extends javax.swing.JFrame {
             }
         }
 
-        // Filtro por km máximo
         if (txtKmMax.isSelected()) {
             String kmMaxStr = JOptionPane.showInputDialog(this, "Introduce el kilometraje máximo:");
             if (kmMaxStr != null && kmMaxStr.matches("\\d+")) {
@@ -185,19 +178,19 @@ public class InfoView extends javax.swing.JFrame {
                 jButton_filtrarActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton_filtrar, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 100, -1, 30));
+        getContentPane().add(jButton_filtrar, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 150, -1, 30));
 
         txtKmMin.setText("KmMin");
-        getContentPane().add(txtKmMin, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 130, -1, -1));
+        getContentPane().add(txtKmMin, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 110, -1, -1));
 
         txtAnio.setText("Año");
-        getContentPane().add(txtAnio, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 80, -1, -1));
+        getContentPane().add(txtAnio, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 110, -1, -1));
 
         txtFecha.setText("Fecha");
-        getContentPane().add(txtFecha, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 80, -1, -1));
+        getContentPane().add(txtFecha, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 110, -1, -1));
 
         txtKmMax.setText("KmMax");
-        getContentPane().add(txtKmMax, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 130, -1, -1));
+        getContentPane().add(txtKmMax, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 110, -1, -1));
 
         jTable_Gastos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {

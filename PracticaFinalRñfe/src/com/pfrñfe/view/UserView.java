@@ -15,16 +15,12 @@ import javax.swing.JOptionPane;
 import java.io.IOException;
 
 public class UserView extends javax.swing.JFrame {
-    
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(UserView.class.getName());
-
     String user;
-    /*public static int sesion_usuario;*/
     
     public UserView() {
         initComponents();
         user = LoginView.user;
-      /*  sesion_usuario = 1;*/
         
         setSize(650, 430);
         setResizable(false);
@@ -32,7 +28,6 @@ public class UserView extends javax.swing.JFrame {
         setLocationRelativeTo(null);
         
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        // Cargar datos del usuario
         cargarDatosUsuario();
          
         ImageIcon back = new ImageIcon("src/images/Back.png");
@@ -51,8 +46,7 @@ public class UserView extends javax.swing.JFrame {
         @Override
         public Image getIconImage(){
         Image retValue = Toolkit.getDefaultToolkit().getImage(ClassLoader.getSystemResource("images/icon_of.png"));
-        return retValue;
-            
+        return retValue;          
         } 
     
     
@@ -74,12 +68,9 @@ private void cargarDatosUsuario() {
             
             if (rs.next()) {
                 String nombreUsuario = rs.getString("nombre");
-             /*   String codigoUuid = rs.getString("codigo_uuid");*/
                 
                 jLabel_NombreUsuario.setText("Bienvenido: " + nombreUsuario);
 
-                /*setUserUuid(codigoUuid);
-                logger.info("Usuario cargado correctamente: " + nombreUsuario);*/
             } else {
                 jLabel_NombreUsuario.setText("Usuario no encontrado");
                 logger.warning("No se encontró el usuario: " + user);
@@ -114,8 +105,6 @@ private void cargarDatosUsuario() {
         try {
             if (rs != null) rs.close();
             if (pst != null) pst.close();
-            // No cerrar la conexión principal si es singleton
-            // if (cn != null) cn.close();
         } catch (SQLException e) {
             logger.warning("Error al cerrar recursos: " + e.getMessage());
         }
@@ -147,8 +136,7 @@ private void cargarDatosUsuario() {
     public String getUserUuid() {
         return this.userUuid;
     }
-        
-    
+          
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -221,7 +209,7 @@ private void cargarDatosUsuario() {
     }//GEN-LAST:event_jButton_VerCochesPropiosActionPerformed
 
     private void jButton_CrearCocheActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_CrearCocheActionPerformed
-        /*Indicar a donde ir después de darle al boton*/
+
         CreateCarView CrearCoche = null;
         try {
             CrearCoche = new CreateCarView();

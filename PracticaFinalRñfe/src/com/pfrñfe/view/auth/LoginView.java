@@ -22,7 +22,6 @@ import java.sql.SQLException;
 
 public class LoginView extends javax.swing.JFrame {
     
-   /*Enviar datos entre interfaces*/
     public static String user = "";
     String pass = "";
     private IAuthController auth;
@@ -32,8 +31,6 @@ public class LoginView extends javax.swing.JFrame {
 
  
     public LoginView() throws ClassNotFoundException, SQLException, IOException {
-        
-        /*this.auth = new AuthController();*/
         initComponents();
         
         try {
@@ -132,9 +129,7 @@ public class LoginView extends javax.swing.JFrame {
     private void jButton_AccederActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_AccederActionPerformed
         
         user = txt_user.getText().trim();
-        pass = new String(txt_password.getPassword()).trim(); // ✅ seguro y moderno
-
-        //pass = txt_password.getText().trim();
+        pass = new String(txt_password.getPassword()).trim();
         
         if (!user.equals("") && !pass.equals("")) {
         UserLoginDto userL = new UserLoginDto(user, pass);
@@ -145,7 +140,6 @@ public class LoginView extends javax.swing.JFrame {
         if (auth.login(userL)) {
             JOptionPane.showMessageDialog(this, "¡Login correcto!");
 
-            // Recupera ID si lo necesitas
             try {
                 Connection cn = DatabaseConnection.getConnection();
                 PreparedStatement pst = cn.prepareStatement("SELECT id_usuario FROM usuario WHERE nombre = ?");
@@ -173,70 +167,14 @@ public class LoginView extends javax.swing.JFrame {
         JOptionPane.showMessageDialog(this, "Debes llenar todos los campos.");
     }
         
-        /*
-        System.out.println("Usuario ingresado: '" + user + "'");
-        System.out.println("Password ingresado: '" + pass + "'");
-        
-        UserLoginDto userL = new UserLoginDto(user, pass);
-        
-        if(auth.login(userL)){
-            
-        }*/
-        
-        /*if (!user.equals("") && !pass.equals("")) {
-            
-            Connection cn = null; 
-            PreparedStatement pst = null;
-            ResultSet rs = null;
-            
-            try {
-                cn = DatabaseConnection.getConnection(); 
-                pst = cn.prepareStatement(
-                    "SELECT id_usuario, nombre FROM usuario "
-                            + "WHERE nombre = ? AND password = ?");
-            pst.setString(1, user);
-            pst.setString(2, pass);
-            rs = pst.executeQuery();
-            
-            if (rs.next()) {
-                int idUsuario = rs.getInt("id_usuario");
-                String nombreUsuario = rs.getString("nombre");
-                UsuarioSesion.setUsuario(idUsuario, nombreUsuario);
-                System.out.println("Login exitoso para: " + nombreUsuario);
-                dispose();
-                new UserView().setVisible(true);
-            } else {
-                JOptionPane.showMessageDialog(null, "Datos de acceso incorrectos");
-                txt_user.setText("");
-                txt_password.setText("");
-            }
-
-        } catch (Exception e) {
-            System.err.println("Error en el botón Acceder: " + e);
-            JOptionPane.showMessageDialog(null, "Error al iniciar sesión!");
-        }//Código agregado ->
-            finally {
-            try {
-                if (rs != null) rs.close();
-                if (pst != null) pst.close();
-            } catch (SQLException ex) {
-                System.err.println("Error al cerrar recursos: " + ex);
-            }
-        }
-
-    } else {
-        JOptionPane.showMessageDialog(null, "Debes llenar todos los campos");
-    }*/
-        
     }//GEN-LAST:event_jButton_AccederActionPerformed
 
     private void txt_passwordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_passwordActionPerformed
-        // TODO add your handling code here:
+      
     }//GEN-LAST:event_txt_passwordActionPerformed
 
     private void jButton_RegistrarseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_RegistrarseActionPerformed
-        
-        /*Indicar a donde ir después de darle al boton*/
+
         RegisterView registrarUsuario = new RegisterView();
         registrarUsuario.setVisible(true);
     }//GEN-LAST:event_jButton_RegistrarseActionPerformed

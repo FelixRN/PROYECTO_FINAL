@@ -128,7 +128,6 @@ public class RegisterView extends javax.swing.JFrame {
         
         nombre = txt_registerNew.getText().trim();
         password = txt_passwordNew.getText().trim();
-        //ComboBox permisos_cmb = cmb_niveles.getSelectedIndex() + 1;
         
         if(nombre.equals("")){
             txt_registerNew.setBackground(Color.RED);
@@ -138,11 +137,6 @@ public class RegisterView extends javax.swing.JFrame {
             txt_passwordNew.setBackground(Color.RED);
             validacion++;
         }
-        //Obetener y seleccionar el id_car
-        /*if(permisos_cmb.equals ==1){
-            id_coche =; 
-            validacion++;
-        }*/
         
         userController.register(nombre,strongPasswordEncryptor.encrypt(password));
         

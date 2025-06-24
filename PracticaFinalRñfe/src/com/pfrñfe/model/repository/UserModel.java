@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.pfrñfe.model.repository;
 
 import com.pfrñfe.view.auth.LoginView;
@@ -30,10 +26,8 @@ public class UserModel implements IUserModel{
                 ResultSet rs = pst.executeQuery();
                 
                 if (rs.next()) {
-                    JOptionPane.showMessageDialog(null, "Nombre de usuario no disponible.");
-                /*cn.close();*/            
+                    JOptionPane.showMessageDialog(null, "Nombre de usuario no disponible.");          
                 } else {
-            //cn.close();
                     if (validacion == 0) {
                         try {
                              Connection cn2 = DatabaseConnection.getConnection(); 
@@ -42,8 +36,7 @@ public class UserModel implements IUserModel{
                             pst2.setString(1, nombre);
                             pst2.setString(2, password);
                             
-                            pst2.executeUpdate();
-                           // cn2.close();                        
+                            pst2.executeUpdate();                   
                             
                             JOptionPane.showMessageDialog(null, "Registro exitoso.");
                             
@@ -62,9 +55,6 @@ public class UserModel implements IUserModel{
             System.err.println("Error en ExpenseController: " + e.getMessage());
         }
         
-    }
-    
-    
-    
+    }       
     
 }

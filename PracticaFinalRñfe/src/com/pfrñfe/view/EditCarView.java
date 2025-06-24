@@ -50,7 +50,7 @@ public class EditCarView extends javax.swing.JFrame {
             jLabel_Wallpaper.getHeight(), Image.SCALE_DEFAULT));
             jLabel_Wallpaper.setIcon(icono);
             this.repaint();
-            //Pendiente de modificar o eliminar:
+            
         jLabel_Titulo.setText("Información del coche de " + car_update);    
             
          try {
@@ -63,15 +63,12 @@ public class EditCarView extends javax.swing.JFrame {
                 if(rs.next()){
                     ID = rs.getInt("id_coche");
                     
-                /*Agregado->*/   /* txt_idCoche.setText(rs.getString("id_coche"));*/
                     txt_marca.setText(rs.getString("marca"));
                     txt_modelo.setText(rs.getString("modelo"));
                     txt_matricula.setText(rs.getString("matricula"));
-                    txt_anno.setText(rs.getString("anio"));//Si no funciona cambiarlo por int en la base de datos
+                    txt_anno.setText(rs.getString("anio"));
                 }
-                //rs.close();
-                //pst.close();
-                //cn.close();
+
         }catch (Exception e) {
             logger.severe("Error al cargar coche: " + e.getMessage());
             JOptionPane.showMessageDialog(this, "Error al cargar coche: " + e.getMessage());
@@ -227,19 +224,16 @@ public class EditCarView extends javax.swing.JFrame {
     } else {
         JOptionPane.showMessageDialog(this, "Debes completar todos los campos");
     }
-
     }//GEN-LAST:event_jButton_UpdateCarActionPerformed
 
     private void jButton_CancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_CancelarActionPerformed
-       dispose();
-       
+       dispose();      
     }//GEN-LAST:event_jButton_CancelarActionPerformed
 
     private void jButton_DeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_DeleteActionPerformed
-      
+     
         carController.deleteCar(ID);
-        dispose();
-        
+        dispose();      
     }//GEN-LAST:event_jButton_DeleteActionPerformed
 
     private void jButton_AddOwnerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_AddOwnerActionPerformed
@@ -251,36 +245,13 @@ public class EditCarView extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Debes introducir un código UUID válido.");
             return;
         }
-
         boolean agregado = carController.addOwner(ID, uuidIngresado.trim());
     
     if (agregado) {
-        // El modelo ya muestra el mensaje de éxito
-        this.dispose(); // Cerrar la ventana si es necesario
+        this.dispose(); 
     }
-    // Si es false, el modelo ya mostró el mensaje de error
 }
         
-       /*try {
-            boolean agregado = carModel.addOwner(car.getIdCoche(), uuidIngresado.trim());
-
-            if (agregado) {
-                JOptionPane.showMessageDialog(this, "Propietario añadido correctamente.");
-                this.dispose();
-            } else {
-                JOptionPane.showMessageDialog(this, 
-                    "No se pudo añadir el propietario.\n" +
-                    "Posibles causas:\n" +
-                    "- El usuario no existe\n" +
-                    "- Ya es propietario del coche\n" +
-                    "- UUID inválido", 
-                    "Error", JOptionPane.WARNING_MESSAGE);
-            }
-
-        } catch (ClassNotFoundException | SQLException|IOException e) {
-            System.err.println("Error en ExpenseController: " + e.getMessage());
-        }
-    }*/
  private void resetBackground() {
         txt_marca.setBackground(Color.white);
         txt_modelo.setBackground(Color.white);
@@ -289,9 +260,6 @@ public class EditCarView extends javax.swing.JFrame {
     
     }//GEN-LAST:event_jButton_AddOwnerActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">

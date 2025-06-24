@@ -81,7 +81,6 @@ public class SeeOwnCars extends javax.swing.JFrame {
                 model.addColumn("Matricula");
                 model.addColumn("Año");
                 
-                /*Si encontro resultado*/
                 while(rs.next()){
                     Object[] fila = new Object[5];
                     
@@ -90,8 +89,16 @@ public class SeeOwnCars extends javax.swing.JFrame {
                     }
                     model.addRow(fila);
                 }
-                //this.dispose();
-                //cn.close();
+                
+                if (model.getRowCount() == 0) {
+                jButton_Edit.setEnabled(false);
+                jButton_Add.setEnabled(false);
+                jButton_Info.setEnabled(false);
+                } else {
+                jButton_Edit.setEnabled(true);
+                jButton_Add.setEnabled(true);
+                jButton_Info.setEnabled(true);
+                }
                 
         } catch (SQLException e) {
             System.err.println("Error al llenar la tabla" + e);
@@ -111,8 +118,8 @@ public class SeeOwnCars extends javax.swing.JFrame {
         if (fila_point > -1) {
             SeeOwnCars.car_update = (String) model.getValueAt(fila_point, columna_point);
             try {
-                ICarController controller = new CarController(); // Maneja excepciones si es necesario
-                EditCarView editarCoche = new EditCarView(controller); // 👈 Aquí se usa el constructor correcto
+                ICarController controller = new CarController();
+                EditCarView editarCoche = new EditCarView(controller); 
                 editarCoche.setVisible(true);
                 SeeOwnCars.this.dispose();
             } catch (Exception ex) {
@@ -129,7 +136,6 @@ public class SeeOwnCars extends javax.swing.JFrame {
         return retValue;
         
     }
-
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -294,7 +300,6 @@ public class SeeOwnCars extends javax.swing.JFrame {
         try {
             int idCoche = Integer.parseInt(inputId.trim());
 
-            // Verificamos que el coche exista
             Connection cn = DatabaseConnection.getConnection();
             PreparedStatement pst = cn.prepareStatement("SELECT * FROM coche WHERE id_coche = ?");
             pst.setInt(1, idCoche);
@@ -317,18 +322,12 @@ public class SeeOwnCars extends javax.swing.JFrame {
     } else {
         JOptionPane.showMessageDialog(null, "ID no introducido.");
     }
-    
-    
-
     }//GEN-LAST:event_jButton_InfoActionPerformed
 
     private void jButton_BackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_BackActionPerformed
         this.dispose();
     }//GEN-LAST:event_jButton_BackActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">

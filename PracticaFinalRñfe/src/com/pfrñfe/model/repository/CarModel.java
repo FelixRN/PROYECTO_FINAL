@@ -26,9 +26,7 @@ public class CarModel implements ICarModel {
     
     @Override
     public void newCar(String modelo, String marca, String matricula, String anno) {
-        
-        //int validacion = 0;
-        
+
         try {
             Connection cn = DatabaseConnection.getConnection(); 
                 PreparedStatement pst = cn.prepareStatement(
@@ -103,31 +101,37 @@ public class CarModel implements ICarModel {
       int confirm = JOptionPane.showConfirmDialog(null, 
         "¿Estás seguro de eliminar este coche? Esta acción no se puede deshacer.",
         "Confirmar eliminación", JOptionPane.YES_NO_OPTION);
-      
-        if (confirm == JOptionPane.YES_OPTION) {
-            try {
-                Connection cn = DatabaseConnection.getConnection();
-                PreparedStatement pst = cn.prepareStatement("DELETE FROM coche WHERE id_coche =?");
-                pst.setInt(1, idCoche);
 
-                int rowsAffected = pst.executeUpdate();
+if (confirm == JOptionPane.YES_OPTION) {
+        try {
+            Connection cn = DatabaseConnection.getConnection();
 
-                if (rowsAffected > 0) {
-                    JOptionPane.showMessageDialog(null, "Coche eliminado correctamente.");
-                    //EditCarView.this.dispose(); // Cierra la ventana actual
-                    // Opcional: Redirigir a la lista de coches
-                    SeeOwnCars volver = new SeeOwnCars();
-                    volver.setVisible(true);
-                } else {
-                    JOptionPane.showMessageDialog(null, "No se encontró el coche a eliminar.");
-                }
+            PreparedStatement pst1 = cn.prepareStatement("DELETE FROM propietario WHERE id_usuario = ? AND id_coche = ?");
+            pst1.setInt(1, UsuarioSesion.getIdUsuario()); 
+            pst1.setInt(2, idCoche);
+            pst1.executeUpdate();
 
-            }catch(SQLException e){
-                e.printStackTrace();
-                JOptionPane.showMessageDialog(null, "Error al eliminar el coche: " + e.getMessage());
-            }catch (Exception e) {
+            PreparedStatement pst2 = cn.prepareStatement("SELECT COUNT(*) FROM propietario WHERE id_coche = ?");
+            pst2.setInt(1, idCoche);
+            ResultSet rs = pst2.executeQuery();
+
+            if (rs.next() && rs.getInt(1) == 0) {
+                PreparedStatement pst3 = cn.prepareStatement("DELETE FROM coche WHERE id_coche = ?");
+                pst3.setInt(1, idCoche);
+                pst3.executeUpdate();
+                JOptionPane.showMessageDialog(null, "Coche eliminado completamente (sin propietarios restantes).");
+            } else {
+                JOptionPane.showMessageDialog(null, "Coche eliminado solo de tu cuenta.");
+            }
+
+            SeeOwnCars volver = new SeeOwnCars();
+            volver.setVisible(true);
+
+            return true;
+
+        } catch (SQLException | ClassNotFoundException | IOException e) {
             e.printStackTrace();
-            JOptionPane.showMessageDialog(null, "Error inesperado: " + e.getMessage());
+            JOptionPane.showMessageDialog(null, "Error al eliminar el coche: " + e.getMessage());
             }
         }else {
         JOptionPane.showMessageDialog(null, "Eliminación cancelada.");
@@ -138,7 +142,52 @@ public class CarModel implements ICarModel {
     @Override
     public boolean updateCar(int idCoche, String modelo, String marca, String matricula, String anno){
         
-        if (validacion == 0 ) {
+if (validacion == 0) {
+        try {
+            Connection cn = DatabaseConnection.getConnection();
+
+            // Verificar si hay otro coche con el mismo modelo
+            PreparedStatement pst = cn.prepareStatement(
+                "SELECT * FROM coche WHERE modelo = ? AND id_coche != ?");
+            pst.setString(1, modelo);
+            pst.setInt(2, idCoche); // ✅ usar el parámetro correctamente
+
+            ResultSet rs = pst.executeQuery();
+
+            if (rs.next()) {
+                JOptionPane.showMessageDialog(null, "El modelo ya está registrado en otro coche.");
+                return false;
+            }
+
+            // Si el modelo no existe en otro coche, actualizamos
+            PreparedStatement pst2 = cn.prepareStatement(
+                "UPDATE coche SET marca = ?, modelo = ?, matricula = ?, anio = ? WHERE id_coche = ?");
+            pst2.setString(1, marca);
+            pst2.setString(2, modelo);
+            pst2.setString(3, matricula);
+            pst2.setString(4, anno);
+            pst2.setInt(5, idCoche);
+
+            int filas = pst2.executeUpdate(); // ✅ ejecutar solo una vez
+
+            if (filas > 0) {
+                JOptionPane.showMessageDialog(null, "Modificación correcta.");
+                return true;
+            } else {
+                JOptionPane.showMessageDialog(null, "No se pudo actualizar el coche.");
+                return false;
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Error al actualizar: " + e);
+            JOptionPane.showMessageDialog(null, "Error en la base de datos.");
+        } catch (Exception ex) {
+            System.err.println("Error inesperado: " + ex);
+            JOptionPane.showMessageDialog(null, "Error inesperado.");
+        }
+
+
+        /*if (validacion == 0 ) {
             
             try {
                 Connection cn = DatabaseConnection.getConnection(); 
@@ -155,7 +204,6 @@ public class CarModel implements ICarModel {
                     return false;
                 } else {
                     
-                //Connection cn2 = DatabaseConnection.getConnection(); 
                 PreparedStatement pst2 = cn.prepareStatement(
                     "update coche set marca=?, modelo=?, matricula=?, anio=? where id_coche = ?");
                 
@@ -181,7 +229,7 @@ public class CarModel implements ICarModel {
             } catch (Exception ex) {
                 System.err.println("Error inesperado: " + ex);
                 JOptionPane.showMessageDialog(null, "Error inesperado");
-            }
+            }*/
         } else {
             JOptionPane.showMessageDialog(null, "Debes llenar todo el campo!");
         }
@@ -201,8 +249,7 @@ public class CarModel implements ICarModel {
         
         try {
             Connection cn = DatabaseConnection.getConnection();
-            
-            // Primera consulta: obtener id_usuario
+
             PreparedStatement pst1 = cn.prepareStatement(query1);
             pst1.setString(1, uuidUsuario);
             ResultSet rs = pst1.executeQuery();
@@ -213,8 +260,7 @@ public class CarModel implements ICarModel {
                 JOptionPane.showMessageDialog(null, "No se encontró el usuario especificado.");
                 return false;
             }
-            
-            // Segunda consulta: insertar propietario
+
             PreparedStatement pst2 = cn.prepareStatement(query2);
             pst2.setInt(1, idUsuario);
             pst2.setInt(2, idCar);
@@ -222,9 +268,6 @@ public class CarModel implements ICarModel {
             
             if (rowsAffected > 0) {
                 JOptionPane.showMessageDialog(null, "Propietario agregado correctamente.");
-                // Opcional: Redirigir a alguna vista específica
-                // SomeView volver = new SomeView();
-                // volver.setVisible(true);
                 return true;
             } else {
                 JOptionPane.showMessageDialog(null, "No se pudo agregar el propietario.");
